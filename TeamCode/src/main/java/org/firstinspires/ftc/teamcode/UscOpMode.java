@@ -39,7 +39,6 @@ public abstract class UscOpMode extends LinearOpMode {
         backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 1
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
-        armMotor = hardwareMap.get(DcMotorEx.class, "arm"); // Motor 0 (Expansion)
     }
         public void runOpMode() throws InterruptedException {
         }
