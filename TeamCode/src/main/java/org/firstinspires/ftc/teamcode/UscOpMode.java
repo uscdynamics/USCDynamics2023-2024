@@ -20,6 +20,10 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 
 public abstract class UscOpMode extends LinearOpMode {
+    protected DcMotorEx intakeLeft;
+    protected DcMotorEx intakeRight;
+
+
     protected DcMotorEx frontLeft;
     protected DcMotorEx frontRight;
     protected DcMotorEx backLeft;
@@ -39,6 +43,8 @@ public abstract class UscOpMode extends LinearOpMode {
         backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 1
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
+        intakeLeft  = hardwareMap.get(DcMotorEx.class, "intakeLeft");
+        intakeRight  = hardwareMap.get(DcMotorEx.class, "intakeRight");
     }
         public void runOpMode() throws InterruptedException {
         }

@@ -41,6 +41,14 @@ public class TeleOpTest extends UscOpMode {
                 backLeft.setPower(-strafeSpeedX);
                 backRight.setPower(-strafeSpeedX);
             }
+            if(this.gamepad1.a) {
+                intakeLeft.setPower(SPEED_MAX);
+                intakeRight.setPower(-1*SPEED_MAX);
+            }
+            else{
+                intakeLeft.setPower(0);
+                intakeRight.setPower(0);
+            }
             if(this.gamepad1.right_bumper) {
                 frontLeft.setPower(-strafeSpeedX + 0.10);
                 frontRight.setPower(-strafeSpeedX + 0.10);
