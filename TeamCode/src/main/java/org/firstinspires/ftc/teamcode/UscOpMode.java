@@ -65,8 +65,6 @@ public abstract class UscOpMode extends LinearOpMode {
         backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 1
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
-        intakeLeft  = hardwareMap.get(DcMotorEx.class, "intakeLeft");
-        intakeRight  = hardwareMap.get(DcMotorEx.class, "intakeRight");
     }
     public void setUpCameras(){
         camera1 = hardwareMap.get(WebcamName.class, "camera1");
