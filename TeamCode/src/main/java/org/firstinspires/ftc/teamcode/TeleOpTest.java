@@ -9,18 +9,18 @@ public class TeleOpTest extends UscOpMode {
         waitForStart();
         double speedX = SPEED_HALF;
         double strafeSpeedX = STRAFE_SPEED;
-        boolean speedButtonIsPressed = false;
+        boolean speedButtonOn = false;
+        boolean intakeOn = false;
         while(opModeIsActive()){
 
             if (this.gamepad1.left_stick_button){
-                if (speedX == SPEED_HALF){
-                    speedX = SPEED_MAX;
-                    strafeSpeedX = SPEED_MAX;
-                }
-                else{
-                    speedX = SPEED_HALF;
-                    strafeSpeedX = STRAFE_SPEED;
-                }
+                speedButtonOn = !speedButtonOn;
+            }
+            if (speedButtonOn){
+                speedX = SPEED_MAX;
+            }
+            else{
+                speedX = SPEED_HALF;
             }
             double throttle = -this.gamepad1.left_stick_y * speedX;
 //            double turn = this.gamepad1.left_stick_x * speedMultiplier;
@@ -42,8 +42,11 @@ public class TeleOpTest extends UscOpMode {
                 backRight.setPower(-strafeSpeedX);
             }
             if(this.gamepad1.a) {
+                intakeOn = !intakeOn;
+            }
+            if (intakeOn){
                 intakeLeft.setPower(SPEED_MAX);
-                intakeRight.setPower(-1*SPEED_MAX);
+                intakeRight.setPower(SPEED_MAX);
             }
             else{
                 intakeLeft.setPower(0);

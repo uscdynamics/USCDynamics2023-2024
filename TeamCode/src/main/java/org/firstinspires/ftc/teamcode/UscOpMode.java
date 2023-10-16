@@ -23,10 +23,6 @@ import org.firstinspires.ftc.vision.*;
 
 
 public abstract class UscOpMode extends LinearOpMode {
-    protected DcMotorEx intakeLeft;
-    protected DcMotorEx intakeRight;
-
-
     protected DcMotorEx frontLeft;
     protected DcMotorEx frontRight;
     protected DcMotorEx backLeft;
