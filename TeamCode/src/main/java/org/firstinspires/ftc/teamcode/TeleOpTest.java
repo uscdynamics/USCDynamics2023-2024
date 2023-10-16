@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TeleOpTest extends UscOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        setUpHardware();
+        setUpHardware(true, false, false, true);
         waitForStart();
         double speedX = SPEED_HALF;
         double strafeSpeedX = STRAFE_SPEED;
