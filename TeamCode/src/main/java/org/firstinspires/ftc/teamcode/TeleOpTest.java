@@ -5,15 +5,22 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TeleOpTest extends UscOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        setUpHardware(true, false, false, true);
+        setUpHardware(true, false, false, false, true);
         waitForStart();
-        double speedX = SPEED_HALF;
+        double speedX = 0.75 * SPEED_MAX;
         double strafeSpeedX = STRAFE_SPEED;
+        double currentX;
+        double currentY;
+        final double PWRSCALER = 3;
         boolean speedButtonOn = false;
         boolean intakeOn = false;
-        while(opModeIsActive()){
 
-            if (this.gamepad1.left_stick_button){
+        boolean aPressed = false;
+
+        while(opModeIsActive()){
+            currentX = Math.pow(Math.sin((Math.PI * this.gamepad1.right_stick_x)/2),3); //Math.pow(this.gamepad1.right_stick_x, PWRSCALER);
+            currentY = Math.pow(Math.sin((Math.PI * this.gamepad1.left_stick_y)/2),3);//Math.pow(this.gamepad1.left_stick_y, PWRSCALER);
+            /*if (this.gamepad1.left_stick_button){
                 speedButtonOn = !speedButtonOn;
             }
             if (speedButtonOn){
@@ -21,12 +28,12 @@ public class TeleOpTest extends UscOpMode {
             }
             else{
                 speedX = SPEED_HALF;
-            }
-            double throttle = -this.gamepad1.left_stick_y * speedX;
+            }*/
+            double throttle = - currentY * speedX;
 //            double turn = this.gamepad1.left_stick_x * speedMultiplier;
 
             // Allow second stick to turn also
-            double turn = this.gamepad1.right_stick_x * speedX;
+            double turn = currentX * speedX;
             double leftSpeed = -1 * (throttle + turn);
             double rightSpeed = throttle - turn;
             frontLeft.setPower(leftSpeed);
@@ -42,13 +49,19 @@ public class TeleOpTest extends UscOpMode {
                 backRight.setPower(-strafeSpeedX);
             }
             if(this.gamepad1.a) {
-                intakeOn = !intakeOn;
+                if (!aPressed) {
+                    intakeOn = !intakeOn;
+                    aPressed = true;
+                }
+            }
+            else {
+                aPressed = false;
             }
             if (intakeOn){
-                intakeLeft.setPower(SPEED_MAX);
-                intakeRight.setPower(SPEED_MAX);
+                intakeLeft.setPower(0.75 * SPEED_MAX);
+                intakeRight.setPower(- 0.75 * SPEED_MAX);
             }
-            else{
+            if (!intakeOn){
                 intakeLeft.setPower(0);
                 intakeRight.setPower(0);
             }

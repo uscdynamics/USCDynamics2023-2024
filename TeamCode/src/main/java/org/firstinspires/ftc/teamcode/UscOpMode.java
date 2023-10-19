@@ -23,6 +23,7 @@ import org.firstinspires.ftc.vision.*;
 
 
 public abstract class UscOpMode extends LinearOpMode {
+
     protected DcMotorEx frontLeft;
     protected DcMotorEx frontRight;
     protected DcMotorEx backLeft;
@@ -35,6 +36,7 @@ public abstract class UscOpMode extends LinearOpMode {
     protected static WebcamName camera1;
     protected static WebcamName camera2;
     protected static WebcamName camera3;
+    protected static VisionPortal visionPortal;
 
     protected Servo clawServo;
     protected Servo otherClawServo;
@@ -46,7 +48,7 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final double SPEED_HALF = 0.5;
 
 
-    public void setUpHardware(boolean drivetrain, boolean cameras, boolean arm, boolean intake){
+    public void setUpHardware(boolean drivetrain, boolean cameras, boolean arm, boolean claw, boolean intake){
         if (drivetrain){
             setUpDrivetrain();
         }
@@ -55,6 +57,9 @@ public abstract class UscOpMode extends LinearOpMode {
         }
         if(arm){
             setUpArm();
+        }
+        if(claw){
+            setUpClaw();
         }
         if(intake){
             setUpIntake();
@@ -74,6 +79,9 @@ public abstract class UscOpMode extends LinearOpMode {
     public void setUpArm(){
         armMotorLeft = hardwareMap.get(DcMotorEx.class, "armLeft");
         armMotorRight = hardwareMap.get(DcMotorEx.class, "armRight");
+    }
+    public void setUpClaw(){
+
     }
     public void setUpIntake(){
         intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
