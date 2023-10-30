@@ -216,10 +216,10 @@ public class WebcamExample extends LinearOpMode
             int tempRedR = 0;
             Imgproc.cvtColor(input,inputHSV, Imgproc.COLOR_RGB2HSV);
             // iterate through rows
-            for(int row = 0;row == inputHSV.rows(); row++){
-                for(int col= 0;col == inputHSV.cols();col++){
+            for(int row = 0;row < inputHSV.rows(); row++){
+                for(int col= 0;col < inputHSV.cols();col++){
                     if(col < input.cols()/3){
-                        if( inputHSV.get(row, col)[0] < 15){
+                        if( inputHSV.get(row, col)[0] < 10){
                             tempRedL++;
                         }
                     }
@@ -239,9 +239,9 @@ public class WebcamExample extends LinearOpMode
                 }
             }
 
-            leftRed = inputHSV.get(inputHSV.rows()/2, inputHSV.cols()/2)[0];
-            rightRed = inputHSV.get(inputHSV.rows()/2, inputHSV.cols()/2)[0];
-            midRed = inputHSV.get(inputHSV.rows()/2, inputHSV.cols()/2)[0];
+            leftRed = tempRedL;
+            rightRed = tempRedR;
+            midRed = tempRedM;
 
             return input;
         }
