@@ -41,6 +41,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 public class WebcamExample extends LinearOpMode
 {
     OpenCvWebcam webcam;
+    ColorPipeline pipeline = new ColorPipeline();
 
     @Override
     public void runOpMode()
@@ -68,7 +69,7 @@ public class WebcamExample extends LinearOpMode
          * of a frame from the camera. Note that switching pipelines on-the-fly
          * (while a streaming session is in flight) *IS* supported.
          */
-        webcam.setPipeline(new ColorPipeline());
+        webcam.setPipeline(pipeline);
 
         /*
          * Open the connection to the camera device. New in v1.4.0 is the ability
@@ -124,14 +125,13 @@ public class WebcamExample extends LinearOpMode
         while (opModeIsActive())
         {
             /*
-             * Send some stats to the telemetry
+             * Send some stats to the telemetry n
              */
-            telemetry.addData("Frame Count", webcam.getFrameCount());
-            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
-            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
-            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
-            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
-            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+            telemetry.addData("left RED", pipeline.getLeftRed());
+            telemetry.addData("Mid RED", pipeline.getMidRed());
+            telemetry.addData("Right RED", pipeline.getRightRed());
+
+
 
             telemetry.update();
 
@@ -191,10 +191,10 @@ public class WebcamExample extends LinearOpMode
      */
     class ColorPipeline extends OpenCvPipeline
     {
-        int leftRed = 0;
-        int midRed = 0;
-        int rightRed = 0;
-        Mat inputHSV;
+        double leftRed = 0;
+        double midRed = 0;
+        double rightRed = 0;
+        Mat inputHSV = new Mat();
         boolean viewportPaused;
 
 
@@ -211,24 +211,51 @@ public class WebcamExample extends LinearOpMode
         @Override
         public Mat processFrame(Mat input)
         {
+            int tempRedL = 0;
+            int tempRedM = 0;
+            int tempRedR = 0;
             Imgproc.cvtColor(input,inputHSV, Imgproc.COLOR_RGB2HSV);
             // iterate through rows
-            for(int row = 0;row == inputHSV.rows(); row++ ){
+            for(int row = 0;row == inputHSV.rows(); row++){
                 for(int col= 0;col == inputHSV.cols();col++){
-                    if(col < input.cols()){
-                        if((inputHSV.get(row, col)[0]) > 340 || inputHSV.get(row, col)[0] < 10){
-                            leftRed++;
-
+                    if(col < input.cols()/3){
+                        if( inputHSV.get(row, col)[0] < 15){
+                            tempRedL++;
                         }
                     }
+
+                    if((col < input.cols()*(2/3)) && col > input.cols()/3){
+                        if( inputHSV.get(row, col)[0] < 10){
+                            tempRedM++;
+                        }
+                    }
+                    if((col < input.cols()*(3/3)) && col > input.cols()*(2/3)){
+                        if( inputHSV.get(row, col)[0] < 10){
+
+                            tempRedR++;
+                        }
+                    }
+
                 }
             }
+
+            leftRed = inputHSV.get(inputHSV.rows()/2, inputHSV.cols()/2)[0];
+            rightRed = inputHSV.get(inputHSV.rows()/2, inputHSV.cols()/2)[0];
+            midRed = inputHSV.get(inputHSV.rows()/2, inputHSV.cols()/2)[0];
+
             return input;
         }
 
-        public int getLeftRed(){
+        public double getLeftRed(){
             return leftRed;
         }
+        public double getMidRed(){
+            return midRed;
+        }
+        public double getRightRed(){
+            return rightRed;
+        }
+
         @Override
         public void onViewportTapped()
         {
