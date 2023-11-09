@@ -30,16 +30,17 @@ public abstract class UscOpMode extends LinearOpMode {
     protected DcMotorEx backRight;
     protected DcMotorEx intakeLeft;
     protected DcMotorEx intakeRight;
-    protected DcMotorEx armMotorLeft;
-    protected DcMotorEx armMotorRight;
+    protected DcMotorEx armMotor1;
+    protected DcMotorEx armMotor2;
 
     protected static WebcamName camera1;
     protected static WebcamName camera2;
     protected static WebcamName camera3;
     protected static VisionPortal visionPortal;
 
-    protected Servo clawServo;
-    protected Servo otherClawServo;
+    protected Servo clawServo1;
+    protected Servo clawServo2;
+
     protected final double WHEEL_DIAMETER = 96.0;
     protected final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     protected final double TICKS_PER_REVOLUTION = 538;
@@ -77,10 +78,14 @@ public abstract class UscOpMode extends LinearOpMode {
         camera3 = hardwareMap.get(WebcamName.class, "camera3");
     }
     public void setUpArm(){
-        armMotorLeft = hardwareMap.get(DcMotorEx.class, "armLeft");
-        armMotorRight = hardwareMap.get(DcMotorEx.class, "armRight");
+        armMotor1 = hardwareMap.get(DcMotorEx.class, "arm1");
+        armMotor2 = hardwareMap.get(DcMotorEx.class, "arm2");
+        armMotor1.setZeroPowerBehavior(BRAKE);
+        armMotor2.setZeroPowerBehavior(BRAKE);
     }
     public void setUpClaw(){
+        clawServo1 = hardwareMap.get(Servo.class, "claw1");
+        clawServo2 = hardwareMap.get(Servo.class, "claw2");
 
     }
     public void setUpIntake(){
