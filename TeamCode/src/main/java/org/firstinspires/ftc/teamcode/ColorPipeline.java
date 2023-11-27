@@ -36,6 +36,7 @@ public class ColorPipeline extends OpenCvPipeline
         int tempRedR = 0;
         boolean redIsPresent;
         Imgproc.cvtColor(input,inputHSV, Imgproc.COLOR_RGB2HSV);
+
         // iterate through row
 
 
@@ -73,27 +74,23 @@ public class ColorPipeline extends OpenCvPipeline
         return input;
     }
     public String getDetection(){
-        int tempRedL = 0;
-        int tempRedM = 0;
+        int tempRedL = 1500;
+        int tempRedM = 300;
         int tempRedR = 0;
         boolean redIsPresent;
         // iterate through rows
         // draw grid lines on our preview
-        for(int row = 50;row < inputHSV.rows()-50; row++){//intill I optimise m
+        for(int row = inputHSV.rows()/2;row < inputHSV.rows(); row++){//intill I optimise m
             for(int col= 5;col < inputHSV.cols()-5;col++){
                 redIsPresent = ((inputHSV.get(row, col)[0] < 12) || (inputHSV.get(row, col)[0] > 175));
 
-                if(col < inputHSV.cols()/3){
-                    if( redIsPresent){
-                        tempRedL++;
-                    }
-                }
-                if((col < ((double)inputHSV.cols())*(2.0/3.0)) && col > inputHSV.cols()/3){
+
+                if(col < inputHSV.cols()/2){
                     if( redIsPresent){
                         tempRedM++;
                     }
                 }
-                if((col < inputHSV.cols()*(3/3)) && col > ((double)inputHSV.cols())*(2.0/3.0)){
+                if(col > inputHSV.cols()/2){
                     if(redIsPresent){
                         tempRedR++;
                     }
@@ -105,14 +102,21 @@ public class ColorPipeline extends OpenCvPipeline
         leftRed = tempRedL;
         rightRed = tempRedR;
         midRed = tempRedM;
-        if (( leftRed >midRed) && leftRed >rightRed){
-            return "left";
-        }
-        else if ((rightRed > leftRed) && midRed < rightRed){
+        if (( rightRed >midRed) && rightRed > 1500){
+            Imgproc.putText(inputHSV, "right", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
+
             return "right";
+
+        }
+        else if ((rightRed < midRed) && midRed > 1500){
+            Imgproc.putText(inputHSV, "middle", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
+
+            return "middle";
         }
         else{
-            return "middle";
+            Imgproc.putText(inputHSV, "left", new Point(70, 200), 1, 40, new Scalar(200, 0, 40));
+
+            return "left";
         }
     }
 
@@ -126,28 +130,37 @@ public class ColorPipeline extends OpenCvPipeline
     public double getRightRed(){
         return rightRed;
     }
-    public void drawGridLines(Mat input){
+    public void drawGridLines(Mat input) {
         Imgproc.rectangle(
                 input,
                 new Point(
-                        input.cols()/3,
+                        input.cols() / 2,
                         input.rows()),
                 new Point(
-                        input.cols()/3,
+                        input.cols() / 2,
                         0),
                 new Scalar(200, 0, 40), 4);
         Imgproc.rectangle(
                 input,
                 new Point(
-                        input.cols()*(2/3),
-                        input.rows()),
-
+                        input.cols(),
+                        input.rows()/2),
                 new Point(
-                        ((double)input.cols())*(2.0/3.0),
-                        0),
-                new Scalar(0, 255, 0), 4);
+                        0,
+                        input.rows()/2),
+                new Scalar(200, 0, 40), 4);
+//        Imgproc.rectangle(
+//                input,
+//                new Point(
+//                        input.cols()*(2/3),
+//                        input.rows()),
+//
+//                new Point(
+//                        ((double)input.cols())*(2.0/3.0),
+//                        0),
+//                new Scalar(0, 255, 0), 4);
+//
+//    }
 
-    }
 
-
-}
+    }}

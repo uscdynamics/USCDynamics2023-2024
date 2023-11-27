@@ -54,7 +54,7 @@ public class FunnyBrickUpAutonomous extends UscOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        setUpHardware(true,false,false,false,false);
+       // setUpHardware(true,false,false,false,false);
         webcam.setPipeline(pipeline);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -69,8 +69,10 @@ public class FunnyBrickUpAutonomous extends UscOpMode {
             }
         });
         telemetry.addLine("Waiting for start");
+
         telemetry.update();
         waitForStart();
+        sleep(1500);
 
         while (opModeIsActive())
         {
@@ -81,35 +83,31 @@ public class FunnyBrickUpAutonomous extends UscOpMode {
             telemetry.addData("Mid RED", pipeline.getMidRed());
             telemetry.addData("RRRRIGHT RED", pipeline.getRightRed());
             // left?
-            if (pipeline.getDetection().equals("left")){
-                telemetry.addData("Detection", "LEFT ");
+            if (pipeline.getDetection().equals("right")){
+                telemetry.addData("Detection", "RIGHTY ");
                 telemetry.update();
-                            sleep(100);
-                strafeLeft(250, 1000);
+                //strafeLeft(250, 1000);
 
             }
             //right
-            else if (pipeline.getDetection().equals("right")){
-                telemetry.addData("Detection", "RIGHT ");
+            else if (pipeline.getDetection().equals("middle")){
+                telemetry.addData("Detection", "middley ");
                 telemetry.update();
-                            sleep(100);
 
-                strafeRight(250, 1000);
+                //strafeRight(250, 1000);
 
 
 
             }
             else{
-                telemetry.addData("Detection", "MIDDDDD MIDDDDDD or nothig ");
+                telemetry.addData("Detection", "left or nothing ");
                 telemetry.update();
-                            sleep(100);
 
-                moveBackward(100,1000);
+              //  moveBackward(100,1000);
 
 
             }
 
-            sleep(100);
         }
     }
 }
