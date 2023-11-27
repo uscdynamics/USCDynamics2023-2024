@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.FLOAT;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.UNKNOWN;
+import static com.sun.tools.doclint.Entity.curren;
 import static com.sun.tools.doclint.Entity.nbsp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -28,18 +29,19 @@ public abstract class UscOpMode extends LinearOpMode {
     protected DcMotorEx frontRight;
     protected DcMotorEx backLeft;
     protected DcMotorEx backRight;
-    protected DcMotorEx intakeLeft;
-    protected DcMotorEx intakeRight;
+    protected DcMotorEx intake;
     protected DcMotorEx armMotor1;
     protected DcMotorEx armMotor2;
+    protected int currentArmPosition;
+
 
     protected static WebcamName camera1;
     protected static WebcamName camera2;
     protected static WebcamName camera3;
     protected static VisionPortal visionPortal;
 
-    protected Servo clawServo1;
-    protected Servo clawServo2;
+    protected Servo clawServo;
+    protected Servo clawRotation;
 
     protected final double WHEEL_DIAMETER = 96.0;
     protected final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
@@ -47,6 +49,11 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final double SPEED_MAX = 1.0;
     protected final double STRAFE_SPEED = 0.75;
     protected final double SPEED_HALF = 0.5;
+    protected final int ARM_SPEED = 4500;
+    protected final int MAX_ARM_HEIGHT = 4250;
+    protected final int MIN_ARM_HEIGHT = 5;
+    protected /*final*/ float servoPlacePosition;
+    protected /*final*/ float servoGrabPosition;
 
 
     public void setUpHardware(boolean drivetrain, boolean cameras, boolean arm, boolean claw, boolean intake){
@@ -80,17 +87,19 @@ public abstract class UscOpMode extends LinearOpMode {
     public void setUpArm(){
         armMotor1 = hardwareMap.get(DcMotorEx.class, "arm1");
         armMotor2 = hardwareMap.get(DcMotorEx.class, "arm2");
+        armMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        currentArmPosition = ((armMotor1.getCurrentPosition() + armMotor2.getCurrentPosition())/2);
         armMotor1.setZeroPowerBehavior(BRAKE);
         armMotor2.setZeroPowerBehavior(BRAKE);
     }
     public void setUpClaw(){
-        clawServo1 = hardwareMap.get(Servo.class, "claw1");
-        clawServo2 = hardwareMap.get(Servo.class, "claw2");
+        clawServo = hardwareMap.get(Servo.class, "clawServo");
+        clawRotation = hardwareMap.get(Servo.class, "clawRotation");
 
     }
     public void setUpIntake(){
-        intakeLeft = hardwareMap.get(DcMotorEx.class, "intakeLeft");
-        intakeRight = hardwareMap.get(DcMotorEx.class, "intakeRight");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
     }
     public void runOpMode() throws InterruptedException {
     }

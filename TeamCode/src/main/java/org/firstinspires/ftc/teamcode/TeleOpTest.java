@@ -14,23 +14,13 @@ public class TeleOpTest extends UscOpMode {
         final double PWRSCALER = 3;
         boolean speedButtonOn = false;
         boolean intakeOn = false;
-
-        boolean aPressed = false;
+        boolean xPressed = false;
 
         while(opModeIsActive()){
-            currentX = Math.pow(Math.sin((Math.PI * this.gamepad1.right_stick_x)/2),3); //Math.pow(this.gamepad1.right_stick_x, PWRSCALER);
-            currentY = Math.pow(Math.sin((Math.PI * this.gamepad1.left_stick_y)/2),3);//Math.pow(this.gamepad1.left_stick_y, PWRSCALER);
-            /*if (this.gamepad1.left_stick_button){
-                speedButtonOn = !speedButtonOn;
-            }
-            if (speedButtonOn){
-                speedX = SPEED_MAX;
-            }
-            else{
-                speedX = SPEED_HALF;
-            }*/
+            currentX = Math.pow(Math.sin((Math.PI * this.gamepad1.right_stick_x)/2),3);
+            currentY = Math.pow(Math.sin((Math.PI * this.gamepad1.left_stick_y)/2),3);
+
             double throttle = - currentY * speedX;
-//            double turn = this.gamepad1.left_stick_x * speedMultiplier;
 
             // Allow second stick to turn also
             double turn = currentX * speedX;
@@ -48,28 +38,49 @@ public class TeleOpTest extends UscOpMode {
                 backLeft.setPower(-strafeSpeedX);
                 backRight.setPower(-strafeSpeedX);
             }
-            if(this.gamepad1.a) {
-                if (!aPressed) {
-                    intakeOn = !intakeOn;
-                    aPressed = true;
-                }
-            }
-            else {
-                aPressed = false;
-            }
-            if (intakeOn){
-                intakeLeft.setPower(0.75 * SPEED_MAX);
-                intakeRight.setPower(- 0.75 * SPEED_MAX);
-            }
-            if (!intakeOn){
-                intakeLeft.setPower(0);
-                intakeRight.setPower(0);
-            }
             if(this.gamepad1.right_bumper) {
                 frontLeft.setPower(-strafeSpeedX + 0.10);
                 frontRight.setPower(-strafeSpeedX + 0.10);
                 backLeft.setPower(strafeSpeedX);
                 backRight.setPower(strafeSpeedX);
+            }
+
+            // Arm Code
+            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
+                armMotor1.setVelocity(ARM_SPEED);
+                armMotor2.setVelocity(ARM_SPEED);
+                currentArmPosition = ((armMotor1.getCurrentPosition() + armMotor2.getCurrentPosition())/2);
+                /* clawRotation.setPosition(servoPlacePosition)*/
+            }
+            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
+                armMotor1.setVelocity(-ARM_SPEED);
+                armMotor2.setVelocity(-ARM_SPEED);
+                currentArmPosition = ((armMotor1.getCurrentPosition() + armMotor2.getCurrentPosition())/2);
+                /* clawRotation.setPosition(servoGrabPosition)*/
+            }
+            else {
+                armMotor1.setVelocity(0);
+                armMotor2.setVelocity(0);
+            }
+             // Intake Code
+            if(this.gamepad1.x) {
+                if (!xPressed) {
+                    intakeOn = !intakeOn;
+                    xPressed = true;
+                }
+            }
+            else {
+                xPressed = false;
+            }
+            if (intakeOn){
+                intake.setPower(0.75 * SPEED_MAX);
+            }
+            if (!intakeOn){
+                intake.setPower(0);
+            }
+            // Claw Code
+            if (this.gamepad1.right_trigger > 0){
+
             }
         }
     }
