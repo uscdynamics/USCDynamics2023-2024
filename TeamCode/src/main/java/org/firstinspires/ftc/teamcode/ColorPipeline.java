@@ -15,6 +15,7 @@ public class ColorPipeline extends OpenCvPipeline
     double rightRed = 0;
     char color = 'r';// red or blue what do we want to detect
     Mat inputHSV = new Mat();
+    String ruhRowRixel = "FUCK";
     boolean viewportPaused;
 
 
@@ -42,56 +43,38 @@ public class ColorPipeline extends OpenCvPipeline
 
         // draw grid lines on our preview
         drawGridLines(input);
-//
-//
-//        for(int row = 50;row < inputHSV.rows()-50; row++){//intill I optimise m
-//            for(int col= 5;col < inputHSV.cols()-5;col++){
-//                redIsPresent = ((inputHSV.get(row, col)[0] < 12) || (inputHSV.get(row, col)[0] > 175));
-//
-//                if(col < input.cols()/3){
-//                    if( redIsPresent){
-//                        tempRedL++;
-//                    }
-//                }
-//                if((col < ((double)input.cols())*(2.0/3.0)) && col > input.cols()/3){
-//                    if( redIsPresent){
-//                        tempRedM++;
-//                    }
-//                }
-//                if((col < input.cols()*(3/3)) && col > ((double)input.cols())*(2.0/3.0)){
-//                    if(redIsPresent){
-//                        tempRedR++;
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//        leftRed = tempRedL;
-//        rightRed = tempRedR;
-//        midRed = tempRedM;
 
         return input;
     }
-    public String getDetection(){
-        int tempRedL = 1500;
+    public String getDetection(String color, boolean isBackStage){
+        int tempRedL = 0;
         int tempRedM = 300;
         int tempRedR = 0;
-        boolean redIsPresent;
+        boolean colorIsPresent;
         // iterate through rows
         // draw grid lines on our preview
         for(int row = inputHSV.rows()/2;row < inputHSV.rows(); row++){//intill I optimise m
             for(int col= 5;col < inputHSV.cols()-5;col++){
-                redIsPresent = ((inputHSV.get(row, col)[0] < 12) || (inputHSV.get(row, col)[0] > 175));
+                if(color.equals("red")){
+                    colorIsPresent = ((inputHSV.get(row, col)[0] < 12) || (inputHSV.get(row, col)[0] > 175));
+                }
+                else{
+                    colorIsPresent = ((inputHSV.get(row, col)[0] > 130) || (inputHSV.get(row, col)[0] < 145)); //idk what blue is just a guess
 
+                }
 
-                if(col < inputHSV.cols()/2){
-                    if( redIsPresent){
+                if(col < inputHSV.cols()/3){
+                    if( colorIsPresent){
+                        tempRedL++;
+                    }
+                }
+                if((col < ((double)inputHSV.cols())*(2.0/3.0)) && col > inputHSV.cols()/3){
+                    if( colorIsPresent){
                         tempRedM++;
                     }
                 }
-                if(col > inputHSV.cols()/2){
-                    if(redIsPresent){
+                if((col < inputHSV.cols()*(3/3)) && col > ((double)inputHSV.cols())*(2.0/3.0)){
+                    if(colorIsPresent){
                         tempRedR++;
                     }
                 }
@@ -102,22 +85,45 @@ public class ColorPipeline extends OpenCvPipeline
         leftRed = tempRedL;
         rightRed = tempRedR;
         midRed = tempRedM;
-        if (( rightRed >midRed) && rightRed > 1500){
-            Imgproc.putText(inputHSV, "right", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
+        if((color.equals("red") && isBackStage) ||(color.equals("blue") && !isBackStage) ){
+            if (( rightRed >midRed) && rightRed > 1500){
+                Imgproc.putText(inputHSV, "right", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
-            return "right";
+                return "right";
 
-        }
-        else if ((rightRed < midRed) && midRed > 1500){
-            Imgproc.putText(inputHSV, "middle", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
+            }
+            else if ((rightRed < midRed) && midRed > 1500){
+                Imgproc.putText(inputHSV, "middle", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
-            return "middle";
+                return "middle";
+            }
+            else{
+                Imgproc.putText(inputHSV, "left", new Point(70, 200), 1, 40, new Scalar(200, 0, 40));
+
+                return "left";
+            }
         }
         else{
-            Imgproc.putText(inputHSV, "left", new Point(70, 200), 1, 40, new Scalar(200, 0, 40));
+            if (( leftRed >midRed) && leftRed > 1500){
+                Imgproc.putText(inputHSV, "right", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
-            return "left";
+                return "left";
+
+            }
+            else if ((leftRed < midRed) && midRed > 1500){
+                Imgproc.putText(inputHSV, "middle", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
+
+                return "middle";
+            }
+            else{
+                Imgproc.putText(inputHSV, "left", new Point(70, 200), 1, 40, new Scalar(200, 0, 40));
+
+                return "left";
+            }
         }
+
+
+
     }
 
 

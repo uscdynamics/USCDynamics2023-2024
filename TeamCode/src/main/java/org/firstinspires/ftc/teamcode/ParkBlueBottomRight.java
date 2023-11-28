@@ -30,12 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -43,9 +37,9 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name="Robot: RizzlerGangONG", group="Robot")
+@Autonomous(name="Robot: ParkBlueBottomRight", group="Robot")
 
-public class FunnyBrickUpAutonomous extends UscOpMode {
+public class ParkBlueBottomRight extends UscOpMode {
     OpenCvWebcam webcam;
     ColorPipeline pipeline = new ColorPipeline();
     @Override
@@ -76,28 +70,19 @@ public class FunnyBrickUpAutonomous extends UscOpMode {
 
         while (opModeIsActive())
         {
-            /*
-             * Send some stats to the telemetry
-             */
-            telemetry.addData("left RED", pipeline.getLeftRed());
-            telemetry.addData("Mid RED", pipeline.getMidRed());
-            telemetry.addData("RRRRIGHT RED", pipeline.getRightRed());
-            // left?
-            if (pipeline.getDetection().equals("right")){
-                telemetry.addData("Detection", "RIGHTY ");
-                telemetry.update();
-                //strafeLeft(250, 1000);
 
+
+            // left?
+            if (pipeline.getDetection("blue",true).equals("right")){
+                telemetry.addData("Detection", "RIGHTY ");
+                 telemetry.update();
+                //strafeLeft(250, 1000);
             }
             //right
-            else if (pipeline.getDetection().equals("middle")){
+            else if (pipeline.getDetection("blue",true).equals("middle")){
                 telemetry.addData("Detection", "middley ");
                 telemetry.update();
-
                 //strafeRight(250, 1000);
-
-
-
             }
             else{
                 telemetry.addData("Detection", "left or nothing ");
