@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class TeleOpTest extends UscOpMode {
@@ -15,11 +17,19 @@ public class TeleOpTest extends UscOpMode {
         boolean speedButtonOn = false;
         boolean intakeOn = false;
         boolean xPressed = false;
+        boolean raiseClaw = false;
+        double clawPos = 0.0;
+        boolean is_trigger_pressed = false;
+        boolean clawOpen = false;
 
         while(opModeIsActive()){
             telemetry.addData("servo1",""+clawServo1.getPosition());
             telemetry.addData("servo2",""+clawServo2.getPosition());
-            telemetry.addData("ArmPos",""+((armMotor1.getCurrentPosition() + armMotor2.getCurrentPosition())/2));
+            telemetry.addData("ArmPos",""+((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2.0));
+            telemetry.addData("ArmPos",""+armMotor1.getCurrentPosition());
+            telemetry.addData("ArmPos",""+armMotor2.getCurrentPosition());
+
+
             telemetry.update();
             currentX = Math.pow(Math.sin((Math.PI * this.gamepad1.right_stick_x)/2),3);
             currentY = Math.pow(Math.sin((Math.PI * this.gamepad1.left_stick_y)/2),3);
@@ -50,22 +60,58 @@ public class TeleOpTest extends UscOpMode {
             }
 
             // Arm Code
-            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
-                armMotor1.setVelocity(ARM_SPEED);
-                armMotor2.setVelocity(-ARM_SPEED);
-                currentArmPosition = ((armMotor1.getCurrentPosition() + armMotor2.getCurrentPosition())/2);
-                /* clawRotation.setPosition(servoPlacePosition)*/
+//            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
+//                armMotor1.setVelocity(ARM_SPEED);
+//                armMotor2.setVelocity(-ARM_SPEED);
+//                currentArmPosition = ((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2);
+//                /* clawRotation.setPosition(servoPlacePosition)*/
+//            }//2840
+//            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
+//                armMotor1.setVelocity(-ARM_SPEED);
+//                armMotor2.setVelocity(ARM_SPEED);
+//                currentArmPosition = ((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2);
+//                /* clawRotation.setPosition(servoGrabPosition)*/
+//            }
+//            else {
+//                armMotor1.setVelocity(0);
+//                armMotor2.setVelocity(0);
+//            }
+            if(raiseClaw == true && this.gamepad1.a){
+                raiseClaw = false;
+                sleep(200);
             }
-            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
-                armMotor1.setVelocity(-ARM_SPEED);
-                armMotor2.setVelocity(ARM_SPEED);
-                currentArmPosition = ((armMotor1.getCurrentPosition() + armMotor2.getCurrentPosition())/2);
+            else if(raiseClaw == false && this.gamepad1.a  ){
+                raiseClaw = true;
+                sleep(200);
+            }
+
+            if(raiseClaw == true){
+                armMotor1.setTargetPosition(2820);
+                armMotor2.setTargetPosition(-2820);
+                armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor1.setVelocity(1300);
+                armMotor2.setVelocity(1300);
+                currentArmPosition = ((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2);
+
+                /*clawRotation.setPosition(servoPlacePosition)*/
+            }
+            else if(raiseClaw == false){
+                armMotor1.setTargetPosition(0);
+                armMotor2.setTargetPosition(0);
+                armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor1.setVelocity(-1300);
+                armMotor2.setVelocity(-1300);
+                currentArmPosition = ((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2);
                 /* clawRotation.setPosition(servoGrabPosition)*/
             }
+
             else {
                 armMotor1.setVelocity(0);
                 armMotor2.setVelocity(0);
             }
+
              // Intake Code
             if(this.gamepad1.x) {
                 if (!xPressed) {
@@ -83,8 +129,23 @@ public class TeleOpTest extends UscOpMode {
                 // intake.setPower(0);
             }
             // Claw Code
-            if (this.gamepad1.right_trigger > 0){
-
+            // Toggle option for triggers to open/close claw
+            if(this.gamepad1.left_trigger > 0 || this.gamepad1.right_trigger > 0) {
+                if(!is_trigger_pressed) {
+                    clawOpen = !clawOpen;
+                    if(clawOpen) {
+                        clawServo1.setPosition(.1f);
+                        clawServo2.setPosition(.1f);
+                    }
+                    else {
+                        clawServo1.setPosition(-.1f);
+                        clawServo2.setPosition(-.1f);
+                    }
+                }
+                is_trigger_pressed = true;
+            }
+            else {
+                is_trigger_pressed = false;
             }
         }
     }
