@@ -40,7 +40,8 @@ public abstract class UscOpMode extends LinearOpMode {
     protected static WebcamName camera3;
     protected static VisionPortal visionPortal;
 
-    protected Servo clawServo;
+    protected Servo clawServo1;
+    protected Servo clawServo2;
     protected Servo clawRotation;
 
     protected final double WHEEL_DIAMETER = 96.0;
@@ -49,7 +50,7 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final double SPEED_MAX = 1.0;
     protected final double STRAFE_SPEED = 0.75;
     protected final double SPEED_HALF = 0.5;
-    protected final int ARM_SPEED = 4500;
+    protected final int ARM_SPEED = 200;
     protected final int MAX_ARM_HEIGHT = 4250;
     protected final int MIN_ARM_HEIGHT = 5;
     protected /*final*/ float servoPlacePosition;
@@ -94,7 +95,8 @@ public abstract class UscOpMode extends LinearOpMode {
         armMotor2.setZeroPowerBehavior(BRAKE);
     }
     public void setUpClaw(){
-        clawServo = hardwareMap.get(Servo.class, "clawServo");
+        clawServo1 = hardwareMap.get(Servo.class, "clawServo1");
+        clawServo2 = hardwareMap.get(Servo.class, "clawServo2");
         clawRotation = hardwareMap.get(Servo.class, "clawRotation");
 
     }
@@ -139,14 +141,14 @@ public abstract class UscOpMode extends LinearOpMode {
 
     protected void motorsForward() {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     protected void motorsBackward() {
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }

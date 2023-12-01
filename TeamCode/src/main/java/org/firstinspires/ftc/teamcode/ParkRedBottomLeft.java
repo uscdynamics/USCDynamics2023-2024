@@ -48,7 +48,7 @@ public class ParkRedBottomLeft extends UscOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-       // setUpHardware(true,false,false,false,false);
+        setUpHardware(true,false,false,false,false);
         webcam.setPipeline(pipeline);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -75,11 +75,13 @@ public class ParkRedBottomLeft extends UscOpMode {
             telemetry.addData("left RED", pipeline.getLeftRed());
             telemetry.addData("Mid RED", pipeline.getMidRed());
             telemetry.addData("RRRRIGHT RED", pipeline.getRightRed());
+            telemetry.addData("cenPixel", pipeline.getPix());
+
             // left?
             if (pipeline.getDetection("red",true).equals("right")){
                 telemetry.addData("Detection", "RIGHTY ");
                  telemetry.update();
-                 moveForward(250,1000);
+                 moveForward(2500,1000);
                  turnRight(90,800);
                 moveForward(250,1000);
                 moveBackward(250,1000);
@@ -107,6 +109,9 @@ public class ParkRedBottomLeft extends UscOpMode {
 
 
             }
+            telemetry.update();
+
+
 
         }
     }

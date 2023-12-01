@@ -81,18 +81,19 @@ public class ColorPipeline extends OpenCvPipeline
 
             }
         }
+        ruhRowRixel = ""+inputHSV.get(inputHSV.rows()/2,inputHSV.cols()/2)[0];
 
         leftRed = tempRedL;
         rightRed = tempRedR;
         midRed = tempRedM;
         if((color.equals("red") && isBackStage) ||(color.equals("blue") && !isBackStage) ){
-            if (( rightRed >midRed) && rightRed > 1500){
+            if (( rightRed >midRed) && rightRed > 2200){
                 Imgproc.putText(inputHSV, "right", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
                 return "right";
 
             }
-            else if ((rightRed < midRed) && midRed > 1500){
+            else if ((rightRed < midRed) && midRed > 2200){
                 Imgproc.putText(inputHSV, "middle", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
                 return "middle";
@@ -104,13 +105,13 @@ public class ColorPipeline extends OpenCvPipeline
             }
         }
         else{
-            if (( leftRed >midRed) && leftRed > 1500){
+            if (( leftRed >midRed) && leftRed > 2200){
                 Imgproc.putText(inputHSV, "right", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
                 return "left";
 
             }
-            else if ((leftRed < midRed) && midRed > 1500){
+            else if ((leftRed < midRed) && midRed > 2200){
                 Imgproc.putText(inputHSV, "middle", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
                 return "middle";
@@ -135,6 +136,9 @@ public class ColorPipeline extends OpenCvPipeline
     }
     public double getRightRed(){
         return rightRed;
+    }
+    public String getPix(){
+        return ruhRowRixel;
     }
     public void drawGridLines(Mat input) {
         Imgproc.rectangle(
