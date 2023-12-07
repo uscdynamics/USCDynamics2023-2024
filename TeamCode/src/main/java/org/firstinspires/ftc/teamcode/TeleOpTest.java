@@ -21,7 +21,8 @@ public class TeleOpTest extends UscOpMode {
         double clawPos = 0.0;
         boolean is_trigger_pressed = false;
         boolean clawOpen = false;
-
+        clawServo1.setPosition(0);
+        clawServo2.setPosition(0);
         while(opModeIsActive()){
             telemetry.addData("servo1",""+clawServo1.getPosition());
             telemetry.addData("servo2",""+clawServo2.getPosition());
@@ -134,12 +135,16 @@ public class TeleOpTest extends UscOpMode {
                 if(!is_trigger_pressed) {
                     clawOpen = !clawOpen;
                     if(clawOpen) {
-                        clawServo1.setPosition(.1f);
-                        clawServo2.setPosition(.1f);
+                        clawServo2.setDirection(Servo.Direction.FORWARD);
+                        clawServo1.setDirection(Servo.Direction.FORWARD);
+                        clawServo1.setPosition(-0.4f);
+                        clawServo2.setPosition(0.14f);
                     }
                     else {
-                        clawServo1.setPosition(-.1f);
-                        clawServo2.setPosition(-.1f);
+                        clawServo2.setDirection(Servo.Direction.REVERSE);
+                        clawServo1.setDirection(Servo.Direction.REVERSE);
+                        clawServo1.setPosition(0.14f);
+                        clawServo2.setPosition(-0.14f);
                     }
                 }
                 is_trigger_pressed = true;

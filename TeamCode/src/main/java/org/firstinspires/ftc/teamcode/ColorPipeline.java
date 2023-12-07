@@ -34,7 +34,7 @@ public class ColorPipeline extends OpenCvPipeline
     {
         int tempRedL = 0;
         int tempRedM = 0;
-        int tempRedR = 0;
+        int tempRedR = 700;
         boolean redIsPresent;
         Imgproc.cvtColor(input,inputHSV, Imgproc.COLOR_RGB2HSV);
 
@@ -48,21 +48,21 @@ public class ColorPipeline extends OpenCvPipeline
     }
     public String getDetection(String color, boolean isBackStage){
         int tempRedL = 0;
-        int tempRedM = 300;
+        int tempRedM = 2000;
         int tempRedR = 0;
         boolean colorIsPresent;
         // iterate through rows
-        // draw grid lines on our preview
+        // draw grid lines on our peview
         for(int row = inputHSV.rows()/2;row < inputHSV.rows(); row++){//intill I optimise m
             for(int col= 5;col < inputHSV.cols()-5;col++){
                 if(color.equals("red")){
                     colorIsPresent = ((inputHSV.get(row, col)[0] < 12) || (inputHSV.get(row, col)[0] > 175));
                 }
                 else{
-                    colorIsPresent = ((inputHSV.get(row, col)[0] > 130) || (inputHSV.get(row, col)[0] < 145)); //idk what blue is just a guess
+                    colorIsPresent = ((inputHSV.get(row, col)[0] > 130/0) || (inputHSV.get(row, col)[0] < 145)); //idk what blue is just a guess
+
 
                 }
-
                 if(col < inputHSV.cols()/3){
                     if( colorIsPresent){
                         tempRedL++;
@@ -87,13 +87,13 @@ public class ColorPipeline extends OpenCvPipeline
         rightRed = tempRedR;
         midRed = tempRedM;
         if((color.equals("red") && isBackStage) ||(color.equals("blue") && !isBackStage) ){
-            if (( rightRed >midRed) && rightRed > 2200){
+            if (( rightRed >midRed) && rightRed > 1600){
                 Imgproc.putText(inputHSV, "right", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
                 return "right";
 
             }
-            else if ((rightRed < midRed) && midRed > 2200){
+            else if ((rightRed < midRed) && midRed > 1600){
                 Imgproc.putText(inputHSV, "middle", new Point(70, 200), 20, 40, new Scalar(200, 0, 40));
 
                 return "middle";

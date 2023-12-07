@@ -41,6 +41,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 public class ParkRedBottomLeft extends UscOpMode {
     OpenCvWebcam webcam;
+    String a = "";
     ColorPipeline pipeline = new ColorPipeline();
     @Override
     public void runOpMode()
@@ -48,7 +49,7 @@ public class ParkRedBottomLeft extends UscOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        setUpHardware(true,false,false,false,false);
+        setUpHardware(true,false,false,true,false);
         webcam.setPipeline(pipeline);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -66,44 +67,64 @@ public class ParkRedBottomLeft extends UscOpMode {
 
         telemetry.update();
         waitForStart();
-        sleep(1500);
+        clawServo1.setPosition(CLOSE_CLAW_1);
+        clawServo2.setPosition(CLOSE_CLAW_2);sleep(2100);
 
-        while (opModeIsActive())
+
+        a = (pipeline.getDetection("red",true));
+        a = (pipeline.getDetection("red",true));
+
+
+        //while (opModeIsActive())
         {
+            a = (pipeline.getDetection("red",true));
+            a = (pipeline.getDetection("red",true));
 
 
             telemetry.addData("left RED", pipeline.getLeftRed());
             telemetry.addData("Mid RED", pipeline.getMidRed());
             telemetry.addData("RRRRIGHT RED", pipeline.getRightRed());
             telemetry.addData("cenPixel", pipeline.getPix());
+            telemetry.update();
+//
+//            if (pipeline.getDetection("red",true).equals("right")){
+//                telemetry.addData("Detection", "RIGHTY ");
+//                 telemetry.update();
+//                 strafeLeft(30,60);
+//                moveForward(810,900);
+//                 turnRight(90,800);
+//                moveForward(80,50);
+//                clawServo1.setPosition(OPEN_CLAW_1);
+//                clawServo2.setPosition(OPEN_CLAW_2);
+//
+//            }
+//            //right
+//            else if (pipeline.getDetection("red",true).equals("middle")){
+//                strafeLeft(30,60);
+//
+//                telemetry.addData("Detection", "middley ");
+//                telemetry.update();
+//                moveForward(1100,800);
+//                clawServo1.setPosition(OPEN_CLAW_1);
+//                clawServo2.setPosition(OPEN_CLAW_2);
+//               // moveBackward(35,1000);
+//
+//
+//            }
+//            else{
+//                strafeLeft(30,60);
+//
+//                telemetry.addData("Detection", "left or nothing ");
+//                telemetry.update();
+//                moveForward(810,800);
+//                turnLeft(88,800);
+//                moveForward(80,50);
+//                clawServo1.setPosition(.14);
+//                clawServo2.setPosition(.14);
+//                clawServo1.setPosition(OPEN_CLAW_1);
+//                clawServo2.setPosition(OPEN_CLAW_2);
+//
 
-            // left?
-            if (pipeline.getDetection("red",true).equals("right")){
-                telemetry.addData("Detection", "RIGHTY ");
-                 telemetry.update();
-                 moveForward(2500,1000);
-                 turnRight(90,800);
-                moveForward(250,1000);
-                moveBackward(250,1000);
-
-            }
-            //right
-            else if (pipeline.getDetection("red",true).equals("middle")){
-                telemetry.addData("Detection", "middley ");
-                telemetry.update();
-                //strafeRight(250, 1000);
-                moveForward(250,1000);
-                moveBackward(35,1000);
-
-
-            }
-            else{
-                telemetry.addData("Detection", "left or nothing ");
-                telemetry.update();
-                moveForward(250,1000);
-                turnLeft(90,800);
-                moveForward(250,1000);
-                moveBackward(250,1000);
 
               //  moveBackward(100,1000);
 
@@ -113,6 +134,5 @@ public class ParkRedBottomLeft extends UscOpMode {
 
 
 
-        }
-    }
-}
+        }}
+

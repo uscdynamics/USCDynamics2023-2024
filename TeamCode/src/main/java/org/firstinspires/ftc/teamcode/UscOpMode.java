@@ -55,6 +55,10 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final int MIN_ARM_HEIGHT = 5;
     protected /*final*/ float servoPlacePosition;
     protected /*final*/ float servoGrabPosition;
+    final double CLOSE_CLAW_1 = 0.39+ .03;
+    final double CLOSE_CLAW_2 = 0.23-.01;
+    final double OPEN_CLAW_1 = 0.0;
+    final double OPEN_CLAW_2 = 0.3;
 
 
     public void setUpHardware(boolean drivetrain, boolean cameras, boolean arm, boolean claw, boolean intake){
@@ -140,17 +144,17 @@ public abstract class UscOpMode extends LinearOpMode {
     }
 
     protected void motorsForward() {
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     protected void motorsBackward() {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     protected void motorsStrafeLeft() {
@@ -161,10 +165,10 @@ public abstract class UscOpMode extends LinearOpMode {
     }
 
     protected void motorsStrafeRight() {
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE); //-
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD); //+
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE); //-
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD); //+
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD); //-
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE); //+
+        frontRight.setDirection(DcMotorSimple.Direction.FORWARD); //-
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE); //+
     }
 
     protected void motorsLeft() {
@@ -186,6 +190,10 @@ public abstract class UscOpMode extends LinearOpMode {
         frontRight.setMotorDisable();
         backLeft.setMotorDisable();
         backRight.setMotorDisable();
+
+
+
+
     }
 
     protected void movementPowerEnable() {
@@ -290,4 +298,5 @@ public abstract class UscOpMode extends LinearOpMode {
             telemetry.update();
         }
     }
+
 }

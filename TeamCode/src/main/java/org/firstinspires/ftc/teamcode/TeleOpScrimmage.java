@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode;
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,11 +13,8 @@ public class TeleOpScrimmage extends UscOpMode {
     final double CLAW_ROTATION_PLACE = 0.9;
     final double CLAW_ROTATION_PICK = 0.28;
 
-    final double CLOSE_CLAW_1 = 0.39;
-    final double CLOSE_CLAW_2 = 0.23;
-    final double OPEN_CLAW_1 = 0.0;
-    final double OPEN_CLAW_2 = 0.3;
-    final double ARM_POWER = 1.0;
+
+    final double ARM_POWER = .65;
 
     public double smartDownPower() {
         return currentArmPosition > 1100 ? ARM_POWER : (currentArmPosition > 500 ? ARM_POWER / 2 : ARM_POWER / 3);
@@ -27,6 +26,7 @@ public class TeleOpScrimmage extends UscOpMode {
         armMotor1.setPower(power);
         armMotor2.setPower(power);
     }
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -57,6 +57,12 @@ public class TeleOpScrimmage extends UscOpMode {
         clawServo1.setPosition(OPEN_CLAW_1);
         clawServo2.setPosition(OPEN_CLAW_2);
 
+        //BRAKE
+        frontLeft.setZeroPowerBehavior(BRAKE);
+        frontRight.setZeroPowerBehavior(BRAKE);
+        backLeft.setZeroPowerBehavior(BRAKE);
+        backRight.setZeroPowerBehavior(BRAKE);
+
         while(opModeIsActive()){
             telemetry.addData("servo1",""+clawServo1.getPosition());
             telemetry.addData("servo2",""+clawServo2.getPosition());
@@ -69,13 +75,13 @@ public class TeleOpScrimmage extends UscOpMode {
             double throttle = - currentY * speedX;
 
             // Allow second stick to turn also
-            double turn = currentX * speedX;
+            double turn = -currentX * speedX;
             double leftSpeed = -1 * (throttle + turn);
             double rightSpeed = throttle - turn;
-            frontLeft.setPower(leftSpeed);
-            backLeft.setPower(leftSpeed);
-            frontRight.setPower(rightSpeed);
-            backRight.setPower(rightSpeed);
+            frontLeft.setPower(-leftSpeed);
+            backLeft.setPower(-leftSpeed);
+            frontRight.setPower(-rightSpeed);
+            backRight.setPower(-rightSpeed);
 
             // Strafe
             if(this.gamepad1.left_bumper) {
