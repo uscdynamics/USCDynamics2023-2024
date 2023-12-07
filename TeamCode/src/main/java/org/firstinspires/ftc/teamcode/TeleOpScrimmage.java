@@ -37,6 +37,10 @@ public class TeleOpScrimmage extends UscOpMode {
         armMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
+        frontRight.setVelocity(0);
+        backRight.setVelocity(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
         double speedX = 0.75 * SPEED_MAX;
         double strafeSpeedX = STRAFE_SPEED;
         double currentX;
