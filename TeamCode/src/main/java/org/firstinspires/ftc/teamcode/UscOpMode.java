@@ -26,6 +26,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessorImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,13 +39,27 @@ public abstract class UscOpMode extends LinearOpMode {
     protected DcMotorEx intake;
     protected DcMotorEx armMotor1;
     protected DcMotorEx armMotor2;
+    protected double posX;
+    protected double posY;
     protected int currentArmPosition;
     private AprilTagProcessor aprilTag;
+    protected ArrayList<DetectionStorage> detectedObjects;
 
     protected static WebcamName camera1;
     protected static WebcamName camera2;
     protected static WebcamName camera3;
     protected static VisionPortal visionPortal;
+
+    protected final DetectionStorage TAG_1 = new DetectionStorage(30.0, 6.0, "Tag: 1");
+    protected final DetectionStorage TAG_2 = new DetectionStorage(36.0, 6.0, "Tag: 2");
+    protected final DetectionStorage TAG_3 = new DetectionStorage(42.0, 6.0, "Tag: 3");
+    protected final DetectionStorage TAG_4 = new DetectionStorage(102.0, 6.0, "Tag: 4");
+    protected final DetectionStorage TAG_5 = new DetectionStorage(108.0, 6.0, "Tag: 5");
+    protected final DetectionStorage TAG_6 = new DetectionStorage(114.0, 6.0, "Tag: 6");
+    protected final DetectionStorage TAG_7 = new DetectionStorage(28.0, 144.0, "Tag: 7");
+    protected final DetectionStorage TAG_8 = new DetectionStorage(36.0, 144.0, "Tag: 8");
+    protected final DetectionStorage TAG_9 = new DetectionStorage(108.0, 144.0, "Tag: 9");
+    protected final DetectionStorage TAG_10 = new DetectionStorage(116.0, 144.0, "Tag: 10");
 
     protected Servo clawServo1;
     protected Servo clawServo2;
@@ -194,21 +209,77 @@ public abstract class UscOpMode extends LinearOpMode {
         }
     }
 
-    protected List<AprilTagDetection> processAprilTags(){
-        List<AprilTagDetection> out =  aprilTag.getDetections();
-        telemetry.addData("# AprilTags Detected", out.size());
-        for (AprilTagDetection detection : out) {
+    protected ArrayList<DetectionStorage> processAprilTags() {
+        List<AprilTagDetection> detections =  aprilTag.getDetections();
+        ArrayList<DetectionStorage> out = new ArrayList<DetectionStorage>();
+        telemetry.addData("# AprilTags Detected", detections.size());
+        for (AprilTagDetection detection : detections) {
             if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
-            } else {
-                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                out.add(new DetectionStorage(detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z,
+                        detection.id, detection.metadata.name));
             }
         }
         return out;
+    }
+
+    protected void calculatePosition(ArrayList<DetectionStorage> in ){
+        int iters = 0;
+        double xOut = 0;
+        double yOut = 0;
+        for (int i = 0; i < in.size(); i++){
+            if (in.get(i).id == 1){
+                xOut += in.get(i).x + TAG_1.x;
+                yOut += in.get(i).y + TAG_1.y;
+                iters++;
+            }
+            else if (in.get(i).id == 2){
+                xOut += in.get(i).x + TAG_2.x;
+                yOut += in.get(i).y + TAG_2.y;
+                iters++;
+            }
+            else if (in.get(i).id == 3){
+                xOut += in.get(i).x + TAG_3.x;
+                yOut += in.get(i).y + TAG_3.y;
+                iters++;
+            }
+            else if (in.get(i).id == 4){
+                xOut += in.get(i).x + TAG_4.x;
+                yOut += in.get(i).y + TAG_4.y;
+                iters++;
+            }
+            else if (in.get(i).id == 5){
+                xOut += in.get(i).x + TAG_5.x;
+                yOut += in.get(i).y + TAG_5.y;
+                iters++;
+            }
+            else if (in.get(i).id == 6){
+                xOut += in.get(i).x + TAG_6.x;
+                yOut += in.get(i).y + TAG_6.y;
+                iters++;
+            }
+            else if (in.get(i).id == 7){
+                xOut += in.get(i).x + TAG_7.x;
+                yOut += in.get(i).y + TAG_7.y;
+                iters++;
+            }
+            else if (in.get(i).id == 8){
+                xOut += in.get(i).x + TAG_8.x;
+                yOut += in.get(i).y + TAG_8.y;
+                iters++;
+            }
+            else if (in.get(i).id == 9){
+                xOut += in.get(i).x + TAG_9.x;
+                yOut += in.get(i).y + TAG_9.y;
+                iters++;
+            }
+            else if (in.get(i).id == 10){
+                xOut += in.get(i).x + TAG_10.x;
+                yOut += in.get(i).y + TAG_10.y;
+                iters++;
+            }
+        }
+        posX = xOut/iters;
+        posY = yOut/iters;
     }
 
     protected void motorsRight() {
@@ -223,10 +294,6 @@ public abstract class UscOpMode extends LinearOpMode {
         frontRight.setMotorDisable();
         backLeft.setMotorDisable();
         backRight.setMotorDisable();
-
-
-
-
     }
 
     protected void movementPowerEnable() {
