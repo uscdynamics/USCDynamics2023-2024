@@ -60,6 +60,7 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final DetectionStorage TAG_8 = new DetectionStorage(36.0, 144.0, "Tag: 8");
     protected final DetectionStorage TAG_9 = new DetectionStorage(108.0, 144.0, "Tag: 9");
     protected final DetectionStorage TAG_10 = new DetectionStorage(116.0, 144.0, "Tag: 10");
+    protected final DetectionStorage[] TAG_LIST = {TAG_1, TAG_2, TAG_3, TAG_4, TAG_5, TAG_6, TAG_7, TAG_8, TAG_9, TAG_10};
 
     protected Servo clawServo1;
     protected Servo clawServo2;
@@ -227,56 +228,9 @@ public abstract class UscOpMode extends LinearOpMode {
         double xOut = 0;
         double yOut = 0;
         for (int i = 0; i < in.size(); i++){
-            if (in.get(i).id == 1){
-                xOut += in.get(i).x + TAG_1.x;
-                yOut += in.get(i).y + TAG_1.y;
-                iters++;
-            }
-            else if (in.get(i).id == 2){
-                xOut += in.get(i).x + TAG_2.x;
-                yOut += in.get(i).y + TAG_2.y;
-                iters++;
-            }
-            else if (in.get(i).id == 3){
-                xOut += in.get(i).x + TAG_3.x;
-                yOut += in.get(i).y + TAG_3.y;
-                iters++;
-            }
-            else if (in.get(i).id == 4){
-                xOut += in.get(i).x + TAG_4.x;
-                yOut += in.get(i).y + TAG_4.y;
-                iters++;
-            }
-            else if (in.get(i).id == 5){
-                xOut += in.get(i).x + TAG_5.x;
-                yOut += in.get(i).y + TAG_5.y;
-                iters++;
-            }
-            else if (in.get(i).id == 6){
-                xOut += in.get(i).x + TAG_6.x;
-                yOut += in.get(i).y + TAG_6.y;
-                iters++;
-            }
-            else if (in.get(i).id == 7){
-                xOut += in.get(i).x + TAG_7.x;
-                yOut += in.get(i).y + TAG_7.y;
-                iters++;
-            }
-            else if (in.get(i).id == 8){
-                xOut += in.get(i).x + TAG_8.x;
-                yOut += in.get(i).y + TAG_8.y;
-                iters++;
-            }
-            else if (in.get(i).id == 9){
-                xOut += in.get(i).x + TAG_9.x;
-                yOut += in.get(i).y + TAG_9.y;
-                iters++;
-            }
-            else if (in.get(i).id == 10){
-                xOut += in.get(i).x + TAG_10.x;
-                yOut += in.get(i).y + TAG_10.y;
-                iters++;
-            }
+            xOut += in.get(i).x + (TAG_LIST[in.get(i).id - 1]).x;
+            yOut += in.get(i).y + (TAG_LIST[in.get(i).id - 1]).y;
+            iters++;
         }
         posX = xOut/iters;
         posY = yOut/iters;
