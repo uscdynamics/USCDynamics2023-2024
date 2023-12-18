@@ -50,16 +50,16 @@ public abstract class UscOpMode extends LinearOpMode {
     protected static WebcamName camera3;
     protected static VisionPortal visionPortal;
 
-    protected final DetectionStorage TAG_1 = new DetectionStorage(30.0, 6.0, "Tag: 1");
-    protected final DetectionStorage TAG_2 = new DetectionStorage(36.0, 6.0, "Tag: 2");
-    protected final DetectionStorage TAG_3 = new DetectionStorage(42.0, 6.0, "Tag: 3");
-    protected final DetectionStorage TAG_4 = new DetectionStorage(102.0, 6.0, "Tag: 4");
-    protected final DetectionStorage TAG_5 = new DetectionStorage(108.0, 6.0, "Tag: 5");
-    protected final DetectionStorage TAG_6 = new DetectionStorage(114.0, 6.0, "Tag: 6");
-    protected final DetectionStorage TAG_7 = new DetectionStorage(28.0, 144.0, "Tag: 7");
+    protected final DetectionStorage TAG_1 = new DetectionStorage(31.0, 12.0, "Tag: 1");
+    protected final DetectionStorage TAG_2 = new DetectionStorage(36.0, 12.0, "Tag: 2");
+    protected final DetectionStorage TAG_3 = new DetectionStorage(41.0, 12.0, "Tag: 3");
+    protected final DetectionStorage TAG_4 = new DetectionStorage(102.0, 12.0, "Tag: 4");
+    protected final DetectionStorage TAG_5 = new DetectionStorage(108.0, 12.0, "Tag: 5");
+    protected final DetectionStorage TAG_6 = new DetectionStorage(114.0, 12.0, "Tag: 6");
+    protected final DetectionStorage TAG_7 = new DetectionStorage(42.0, 144.0, "Tag: 7");
     protected final DetectionStorage TAG_8 = new DetectionStorage(36.0, 144.0, "Tag: 8");
     protected final DetectionStorage TAG_9 = new DetectionStorage(108.0, 144.0, "Tag: 9");
-    protected final DetectionStorage TAG_10 = new DetectionStorage(116.0, 144.0, "Tag: 10");
+    protected final DetectionStorage TAG_10 = new DetectionStorage(102.0, 144.0, "Tag: 10");
     protected final DetectionStorage[] TAG_LIST = {TAG_1, TAG_2, TAG_3, TAG_4, TAG_5, TAG_6, TAG_7, TAG_8, TAG_9, TAG_10};
 
     protected Servo clawServo1;
@@ -228,9 +228,16 @@ public abstract class UscOpMode extends LinearOpMode {
         double xOut = 0;
         double yOut = 0;
         for (int i = 0; i < in.size(); i++){
-            xOut += in.get(i).x + (TAG_LIST[in.get(i).id - 1]).x;
-            yOut += in.get(i).y + (TAG_LIST[in.get(i).id - 1]).y;
-            iters++;
+            if (in.get(i).id >= 7){
+                xOut += -in.get(i).x + (TAG_LIST[in.get(i).id - 1]).x;
+                yOut += -in.get(i).y + (TAG_LIST[in.get(i).id - 1]).y;
+                iters++;
+            }
+            else {
+                xOut += -in.get(i).x + (TAG_LIST[in.get(i).id - 1]).x;
+                yOut += in.get(i).y + (TAG_LIST[in.get(i).id - 1]).y;
+                iters++;
+            }
         }
         posX = xOut/iters;
         posY = yOut/iters;

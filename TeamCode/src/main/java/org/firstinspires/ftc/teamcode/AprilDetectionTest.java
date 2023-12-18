@@ -85,8 +85,8 @@ public class AprilDetectionTest extends UscOpMode {
                 telemetry.addData("Tag " + detectedObjects.get(j).id, detectedObjects.get(j).toString());
             }
             calculatePosition(detectedObjects);
-            telemetry.addData("Average X: ", posX);
-            telemetry.addData("Average Y: ", posY);
+            telemetry.addData("Average X: ", Math.round(posX));
+            telemetry.addData("Average Y: ", Math.round(posY));
         }
     }
 }
