@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class TeleOpTest extends UscOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        setUpHardware(true, false, true, true, false);
+        setUpHardware(true, false, true, true, false, false);
         waitForStart();
         double speedX = 0.75 * SPEED_MAX;
         double strafeSpeedX = STRAFE_SPEED;
@@ -60,23 +60,20 @@ public class TeleOpTest extends UscOpMode {
                 backRight.setPower(strafeSpeedX);
             }
 
-            // Arm Code
-//            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
-//                armMotor1.setVelocity(ARM_SPEED);
-//                armMotor2.setVelocity(-ARM_SPEED);
-//                currentArmPosition = ((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2);
-//                /* clawRotation.setPosition(servoPlacePosition)*/
-//            }//2840
-//            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
-//                armMotor1.setVelocity(-ARM_SPEED);
-//                armMotor2.setVelocity(ARM_SPEED);
-//                currentArmPosition = ((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2);
-//                /* clawRotation.setPosition(servoGrabPosition)*/
-//            }
-//            else {
-//                armMotor1.setVelocity(0);
-//                armMotor2.setVelocity(0);
-//            }
+            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
+                armMotor1.setVelocity(ARM_SPEED);
+                armMotor2.setVelocity(-ARM_SPEED);
+                currentArmPosition = ((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2);
+            }//2840
+            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
+                armMotor1.setVelocity(-ARM_SPEED);
+                armMotor2.setVelocity(ARM_SPEED);
+                currentArmPosition = ((armMotor1.getCurrentPosition() + -armMotor2.getCurrentPosition())/2);
+            }
+            else {
+                armMotor1.setVelocity(0);
+                armMotor2.setVelocity(0);
+            }
             if(raiseClaw == true && this.gamepad1.a){
                 raiseClaw = false;
                 sleep(200);

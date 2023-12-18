@@ -44,7 +44,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class AprilDetectionTest extends UscOpMode {
     @Override
     public void runOpMode() {
-        setUpHardware(true, true, false, false, false);
+        setUpHardware(true, true, false, false, false, false);
         waitForStart();
         double speedX = 0.75 * SPEED_MAX;
         double strafeSpeedX = STRAFE_SPEED;

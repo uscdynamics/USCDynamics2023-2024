@@ -30,7 +30,7 @@ public class TeleOpScrimmage extends UscOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        setUpHardware(true, false, true, true, true);
+        setUpHardware(true, false, true, true, true, false);
 
         // TODO: Move this to setUpHardware
         armMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

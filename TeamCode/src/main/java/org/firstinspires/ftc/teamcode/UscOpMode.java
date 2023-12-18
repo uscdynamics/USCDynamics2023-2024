@@ -65,6 +65,7 @@ public abstract class UscOpMode extends LinearOpMode {
     protected Servo clawServo1;
     protected Servo clawServo2;
     protected Servo clawRotation;
+    protected Servo planeLauncher;
     protected boolean aprilTagCam = false;
 
     protected final double WHEEL_DIAMETER = 96.0;
@@ -73,18 +74,20 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final double SPEED_MAX = 1.0;
     protected final double STRAFE_SPEED = 0.75;
     protected final double SPEED_HALF = 0.5;
-    protected final int ARM_SPEED = 200;
-    protected final int MAX_ARM_HEIGHT = 4250;
+    protected final int ARM_SPEED = 800;
+    protected final int MAX_ARM_HEIGHT = 3100;
     protected final int MIN_ARM_HEIGHT = 5;
     protected /*final*/ float servoPlacePosition;
     protected /*final*/ float servoGrabPosition;
+    protected final double AIRPLANE_HOLD_POS = 0.7;
+    protected final double AIRPLANE_RELEASE_POS = -1.0;
     final double CLOSE_CLAW_1 = 0.39+ .03;
     final double CLOSE_CLAW_2 = 0.23-.01;
     final double OPEN_CLAW_1 = 0.0;
     final double OPEN_CLAW_2 = 0.3;
 
 
-    public void setUpHardware(boolean drivetrain, boolean cameras, boolean arm, boolean claw, boolean intake){
+    public void setUpHardware(boolean drivetrain, boolean cameras, boolean arm, boolean claw, boolean intake, boolean launch){
         if (drivetrain){
             setUpDrivetrain();
         }
@@ -99,6 +102,10 @@ public abstract class UscOpMode extends LinearOpMode {
         }
         if(intake){
             setUpIntake();
+        }
+        if(launch){
+            setUpAirplane();
+            planeLauncher.setPosition(AIRPLANE_HOLD_POS);
         }
     }
     public void setUpDrivetrain() {
@@ -124,18 +131,20 @@ public abstract class UscOpMode extends LinearOpMode {
         clawServo1 = hardwareMap.get(Servo.class, "clawServo1");
         clawServo2 = hardwareMap.get(Servo.class, "clawServo2");
         clawRotation = hardwareMap.get(Servo.class, "clawRotation");
-
     }
     public void setUpIntake(){
         intake = hardwareMap.get(DcMotorEx.class, "intake");
+    }
+    public void setUpAirplane(){
+        planeLauncher = hardwareMap.get(Servo.class, "launcher");
     }
     public void runOpMode() throws InterruptedException {
     }
 
     @Override
     public void waitForStart() {
-            super.waitForStart();
-        }
+        super.waitForStart();
+    }
 
     protected void resetMotors() {
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
