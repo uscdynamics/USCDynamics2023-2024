@@ -38,7 +38,7 @@ public class ColorMaskPipeline extends OpenCvPipeline
     Scalar bupper = new Scalar(135,255,255);
     Mat blueMask =  new Mat();
 
-    int redLSum = 0;
+    int redLSum = 0;//ah
     int redRSum = 0;
 
     int blueLSum = 0;
