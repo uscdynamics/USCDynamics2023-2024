@@ -1,7 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Bitmap;
+import android.provider.ContactsContract;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Core;
@@ -24,27 +29,26 @@ public class ColorMaskPipeline extends OpenCvPipeline
     Mat fullRedMask = new Mat();
 
 
-    /*
-     * NOTE
-     * : if you wish to use additional Mat objects in your processing pipeline, it is
-     * highly recommended to declare them here as instance variables and re-use them for
-     * each invocation of processFrame(), rather than declaring them as new local variables
-     * each time through processFrame(). This removes the danger of causing a memory leak
-     * by forgetting to call mat.release(), and it also reduces memory pressure by not
-     * constantly allocating and freeing large chunks of memory.
-     */
+    Scalar lower1 = new Scalar(0,120,120);
+    Scalar lower2 = new Scalar(160,120,120);
+    Scalar upper1 = new Scalar(18,255,255);
+    Scalar upper2 = new Scalar(180,255,255);
+//blue
+    Scalar blower = new Scalar(80,130,45);
+    Scalar bupper = new Scalar(135,255,255);
+    Mat blueMask =  new Mat();
+
+    int redLSum = 0;
+    int redRSum = 0;
+
+    int blueLSum = 0;
+    int blueRSum = 0;
+
+
 
     @Override
     public Mat processFrame(Mat input)
     {
-        int tempRedL = 0;
-        int tempRedM = 0;
-        int tempRedR = 700;
-        boolean redIsPresent;
-        Scalar lower1 = new Scalar(0,120,120);
-        Scalar lower2 = new Scalar(160,120,120);
-        Scalar upper1 = new Scalar(18,255,255);
-        Scalar upper2 = new Scalar(180,255,255);
 
 
 
@@ -53,7 +57,15 @@ public class ColorMaskPipeline extends OpenCvPipeline
         Core.inRange(inputHSV,lower2,upper2,redMask2);
 
         Core.bitwise_or(redMask1,redMask2,fullRedMask);
-        Imgproc.find
+        Core.inRange(inputHSV,blower,bupper,blueMask);
+
+        blueLSum = Core.countNonZero(blueMask.submat(0,blueMask.rows(),0,blueMask.cols()/2));
+        blueRSum = Core.countNonZero(blueMask.submat(0,blueMask.rows(),blueMask.cols()/2,blueMask.cols()));
+
+
+        redLSum = Core.countNonZero(fullRedMask.submat(0,fullRedMask.rows(),0,fullRedMask.cols()/2));
+        redRSum = Core.countNonZero(fullRedMask.submat(0,fullRedMask.rows(),fullRedMask.cols()/2,fullRedMask.cols()));
+
 
 
 
@@ -61,7 +73,7 @@ public class ColorMaskPipeline extends OpenCvPipeline
         // draw grid lines on our preview
         drawGridLines(input);
 
-        return fullRedMask;
+        return blueMask;
     }
 //    public String getDetection(String color, boolean isBackStage){
 //
@@ -69,18 +81,21 @@ public class ColorMaskPipeline extends OpenCvPipeline
 //    }
 
 
-    public double getLeftRed(){
-        return leftRed;
+    public int getLeftRed(){
+        return redLSum;
     }
-    public double getMidRed(){
-        return midRed;
+
+    public int getRightRed(){
+        return redRSum;
     }
-    public double getRightRed(){
-        return rightRed;
+    public int getLeftBlue(){
+        return blueLSum;
     }
-    public String getPix(){
-        return ruhRowRixel;
+
+    public double getRightBlue(){
+        return blueRSum;
     }
+
     public void drawGridLines(Mat input) {
         Imgproc.rectangle(
                 input,

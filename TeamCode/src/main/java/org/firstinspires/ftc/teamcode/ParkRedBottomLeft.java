@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -42,7 +44,11 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class ParkRedBottomLeft extends UscOpMode {
     OpenCvWebcam webcam;
     String a = "";
-    ColorPipeline pipeline = new ColorPipeline();
+    ColorMaskPipeline pipeline = new ColorMaskPipeline();
+    FtcDashboard dash = FtcDashboard.getInstance();
+    TelemetryPacket pac = new TelemetryPacket();
+
+
     @Override
     public void runOpMode()
     {
@@ -63,29 +69,18 @@ public class ParkRedBottomLeft extends UscOpMode {
             {
             }
         });
-        telemetry.addLine("Waiting for start");
-
-        telemetry.update();
-        waitForStart();
-        clawServo1.setPosition(CLOSE_CLAW_1);
-        clawServo2.setPosition(CLOSE_CLAW_2);sleep(2100);
 
 
-        a = (pipeline.getDetection("red",true));
-        a = (pipeline.getDetection("red",true));
-
-
-        //while (opModeIsActive())
+        while (opModeIsActive())
         {
-            a = (pipeline.getDetection("red",true));
-            a = (pipeline.getDetection("red",true));
+            pac.put("bluL",""+pipeline.getLeftBlue());
+            pac.put("bluR",""+pipeline.getRightBlue());
+            pac.put("fps",webcam.getFps());
 
 
-            telemetry.addData("left RED", pipeline.getLeftRed());
-            telemetry.addData("Mid RED", pipeline.getMidRed());
-            telemetry.addData("RRRRIGHT RED", pipeline.getRightRed());
-            telemetry.addData("cenPixel", pipeline.getPix());
-            telemetry.update();
+            dash.sendTelemetryPacket(pac);
+
+
 //
 //            if (pipeline.getDetection("red",true).equals("right")){
 //                telemetry.addData("Detection", "RIGHTY ");

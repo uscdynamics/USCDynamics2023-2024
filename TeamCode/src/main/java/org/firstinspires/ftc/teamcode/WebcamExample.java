@@ -21,6 +21,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.DashboardCore;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -35,11 +37,17 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.OpenCvInternalCamera;
+import com.acmerobotics.dashboard.telemetry.*;
+import  com.acmerobotics.dashboard.FtcDashboard;
 
 
 @TeleOp
 public class WebcamExample extends LinearOpMode
 {
+    FtcDashboard dash = FtcDashboard.getInstance();
+    TelemetryPacket pac = new TelemetryPacket();
+
+
     OpenCvCamera webcam;
     ColorMaskPipeline pipeline = new ColorMaskPipeline();
 
@@ -52,7 +60,7 @@ public class WebcamExample extends LinearOpMode
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+               webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -62,6 +70,7 @@ public class WebcamExample extends LinearOpMode
 
         telemetry.addLine("Waiting for start");
         telemetry.update();
+        pac.addLine("wtf");
 
         /*
          * Wait for the user to press start on the Driver Station
@@ -69,6 +78,15 @@ public class WebcamExample extends LinearOpMode
         waitForStart();
 
         while (opModeIsActive()) {
+            pac.put("bluL",""+pipeline.getLeftBlue());
+            pac.put("bluR",""+pipeline.getRightBlue());
+            pac.put("fps",webcam.getFps());
+
+
+            dash.sendTelemetryPacket(pac);
+
+
+
 
         }
     }}
