@@ -114,6 +114,23 @@ public abstract class UscOpMode extends LinearOpMode {
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
     }
+    public void drivetrainDirection(boolean forward){
+        if (forward){
+            backLeft = hardwareMap.get(DcMotorEx.class, "backLeft"); // Motor 0
+            backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 1
+            frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
+            frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
+        }
+        else {
+            frontRight = hardwareMap.get(DcMotorEx.class, "backLeft"); // Motor 0
+            frontLeft = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 1
+            backRight = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
+            backLeft = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
+        }
+
+
+    }
+
     public void setUpCameras(){
         aprilTagCam = true;
         initAprilTag();
@@ -369,4 +386,13 @@ public abstract class UscOpMode extends LinearOpMode {
         }
     }
 
+    // Visualization of scaling functions: https://www.desmos.com/calculator/attwysf9bd
+
+    protected double scaleMovement(double vIn){
+        return Math.pow(Math.sin((Math.PI * vIn) / 2), 3);
+    }
+
+    protected double scaleArmMovement(double vIn){
+        return Math.pow(Math.E, -(Math.pow(vIn - (MAX_ARM_HEIGHT + MIN_ARM_HEIGHT)/2, 2)/ 1500000));
+    }
 }

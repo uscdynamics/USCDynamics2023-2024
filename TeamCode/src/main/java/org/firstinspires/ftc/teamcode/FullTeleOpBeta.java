@@ -11,15 +11,26 @@ public class FullTeleOpBeta extends UscOpMode{
         double strafeSpeedX = STRAFE_SPEED;
         double currentX;
         double currentY;
+        double currentArm;
         double desiredArmPosition = 0;
         final double PWRSCALER = 3;
         boolean speedButtonOn = false;
 
         while (opModeIsActive()) {
             telemetry.update();
+            // Inversion
+            if (this.gamepad1.dpad_up){
+                drivetrainDirection(true);
+                telemetry.addData("Direction: ", "Forward");
+            }
+            else if (this.gamepad1.dpad_down){
+                drivetrainDirection(false);
+                telemetry.addData("", "!!!!!!!!!!!!!!!!!!WARNING: REVERSE MODE!!!!!!!!!!!!!!!!!!!!");
+                telemetry.addData("Direction: ", "Reverse");
+            }
             // Drive
-            currentX = Math.pow(Math.sin((Math.PI * this.gamepad1.right_stick_x) / 2), 3);
-            currentY = Math.pow(Math.sin((Math.PI * this.gamepad1.left_stick_y) / 2), 3);
+            currentX = scaleMovement(this.gamepad1.right_stick_x);
+            currentY = scaleMovement(this.gamepad1.left_stick_y);
             double throttle = -currentY * speedX;
             // Allow second stick to turn also
             double turn = currentX * speedX;
@@ -44,14 +55,15 @@ public class FullTeleOpBeta extends UscOpMode{
             }
             // Arm
             currentArmPosition = (armMotor2.getCurrentPosition() - armMotor1.getCurrentPosition())/2;
+            currentArm = ARM_SPEED * scaleArmMovement(currentArmPosition);
             if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
-                armMotor1.setVelocity(-ARM_SPEED);
-                armMotor2.setVelocity(ARM_SPEED);
+                armMotor1.setVelocity(-currentArm);
+                armMotor2.setVelocity(currentArm);
                 desiredArmPosition = currentArmPosition;
             }
             else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
-                armMotor1.setVelocity(ARM_SPEED);
-                armMotor2.setVelocity(-ARM_SPEED);
+                armMotor1.setVelocity(currentArm);
+                armMotor2.setVelocity(-currentArm);
                 desiredArmPosition = currentArmPosition;
             }
             else {
