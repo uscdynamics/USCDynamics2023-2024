@@ -21,6 +21,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.DashboardCore;
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -35,24 +37,30 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 import org.openftc.easyopencv.OpenCvInternalCamera;
+import com.acmerobotics.dashboard.telemetry.*;
+import  com.acmerobotics.dashboard.FtcDashboard;
 
 
 @TeleOp
 public class WebcamExample extends LinearOpMode
 {
-    OpenCvWebcam webcam;
-    ColorPipeline pipeline = new ColorPipeline();
+    FtcDashboard dash = FtcDashboard.getInstance();
+    TelemetryPacket pac = new TelemetryPacket();
+
+
+    OpenCvCamera webcam;
+    ColorMaskPipeline pipeline = new ColorMaskPipeline();
 
     @Override
     public void runOpMode() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        webcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK,cameraMonitorViewId);
 
         webcam.setPipeline(pipeline);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+               webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -62,6 +70,7 @@ public class WebcamExample extends LinearOpMode
 
         telemetry.addLine("Waiting for start");
         telemetry.update();
+        pac.addLine("wtf");
 
         /*
          * Wait for the user to press start on the Driver Station
@@ -69,66 +78,16 @@ public class WebcamExample extends LinearOpMode
         waitForStart();
 
         while (opModeIsActive()) {
-            /*
-             * Send some stats to the telemetry
-             */
-            telemetry.addData("left RED", pipeline.getLeftRed());
-            telemetry.addData("Mid RED", pipeline.getMidRed());
-            telemetry.addData("RRRRIGHT RED", pipeline.getRightRed());
-            // left?
-            if ((pipeline.getLeftRed() > pipeline.getMidRed()) && pipeline.getLeftRed() > pipeline.getRightRed()) {
-                telemetry.addData("Detection", "LEFT ");
-                telemetry.update();
+            pac.put("bluL",""+pipeline.getLeftBlue());
+            pac.put("bluR",""+pipeline.getRightBlue());
+            pac.put("fps",webcam.getFps());
 
-            }
-            //right
-            else if (pipeline.getRightRed() > pipeline.getLeftRed() && pipeline.getMidRed() < pipeline.getRightRed()) {
-                telemetry.addData("Detection", "RIGHT ");
-                telemetry.update();
 
-            } else {
-                telemetry.addData("Detection", "MIDDDDD MIDDDDDD or nothig ");
-                telemetry.update();
+            dash.sendTelemetryPacket(pac);
 
-            }
 
-            telemetry.update();
 
-            /*
-             * NOTE: stopping the stream from the camera early (before the end of the OpMode
-             * when it will be automatically stopped for you) *IS* supported. The "if" statement
-             * below will stop streaming from the camera when the "A" button on gamepad 1 is pressed.
-             */
-            if (gamepad1.a) {
-                /*
-                 * IMPORTANT NOTE: calling stopStreaming() will indeed stop the stream of images
-                 * from the camera (and, by extension, stop calling your vision pipeline). HOWEVER,
-                 * if the reason you wish to stop the stream early is to switch use of the camera
-                 * over to, say, Vuforia or TFOD, you will also need to call closeCameraDevice()
-                 * (commented out below), because according to the Android Camera API documentation:
-                 *         "Your application should only have one Camera object active at a time for
-                 *          a particular hardware camera."
-                 *
-                 * NB: calling closeCameraDevice() will internally call stopStreaming() if applicable,
-                 * but it doesn't hurt to call it anyway, if for no other reason than clarity.
-                 *
-                 * NB2: if you are stopping the camera stream to simply save some processing power
-                 * (or battery power) for a short while when you do not need your vision pipeline,
-                 * it is recommended to NOT call closeCameraDevice() as you will then need to re-open
-                 * it the next time you wish to activate your vision pipeline, which can take a bit of
-                 * time. Of course, this comment is irrelevant in light of the use case described in
-                 * the above "important note".
-                 */
-                webcam.stopStreaming();
-                //webcam.closeCameraDevice();
-            }
 
-            /*
-             * For the purposes of this sample, throttle ourselves to 10Hz loop to avoid burning
-             * excess CPU cycles for no reason. (By default, telemetry is only sent to the DS at 4Hz
-             * anyway). Of course in a real OpMode you will likely not want to do this.
-             */
-            sleep(100);
         }
     }}
 

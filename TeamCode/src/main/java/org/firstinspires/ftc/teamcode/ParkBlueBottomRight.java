@@ -40,22 +40,40 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous(name="Robot: ParkBlueBottomRight", group="Robot")
 
 public class ParkBlueBottomRight extends UscOpMode {
-    OpenCvWebcam webcam;
-    ColorPipeline pipeline = new ColorPipeline();
+    OpenCvWebcam webcam1;
+    OpenCvWebcam webcam2;
+    ColorMaskPipeline pipeline1 = new ColorMaskPipeline();
+    ColorMaskPipeline pipeline2 = new ColorMaskPipeline();
     @Override
     public void runOpMode()
     {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-       // setUpHardware(true,false,false,false,false);
-        webcam.setPipeline(pipeline);
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        webcam2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
+
+        // setUpHardware(true,false,false,false,false);
+        webcam1.setPipeline(pipeline1);
+        webcam2.setPipeline(pipeline2);
+
+        webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                webcam1.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+            }
+            @Override
+            public void onError(int errorCode)
+            {
+            }
+        });
+        webcam2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam2.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
             @Override
             public void onError(int errorCode)
@@ -72,26 +90,26 @@ public class ParkBlueBottomRight extends UscOpMode {
         {
 
 
-            // left?
-            if (pipeline.getDetection("blue",true).equals("right")){
-                telemetry.addData("Detection", "RIGHTY ");
-                 telemetry.update();
-                //strafeLeft(250, 1000);
-            }
-            //right
-            else if (pipeline.getDetection("blue",true).equals("middle")){
-                telemetry.addData("Detection", "middley ");
-                telemetry.update();
-                //strafeRight(250, 1000);
-            }
-            else{
-                telemetry.addData("Detection", "left or nothing ");
-                telemetry.update();
-
-              //  moveBackward(100,1000);
-
-
-            }
+//            // left?
+//            if (pipeline.getDetection("blue",true).equals("right")){
+//                telemetry.addData("Detection", "RIGHTY ");
+//                 telemetry.update();
+//                //strafeLeft(250, 1000);
+//            }
+//            //right
+//            else if (pipeline.getDetection("blue",true).equals("middle")){
+//                telemetry.addData("Detection", "middley ");
+//                telemetry.update();
+//                //strafeRight(250, 1000);
+//            }
+//            else{
+//                telemetry.addData("Detection", "left or nothing ");
+//                telemetry.update();
+//
+//              //  moveBackward(100,1000);
+//
+//
+//            }
 
         }
     }
