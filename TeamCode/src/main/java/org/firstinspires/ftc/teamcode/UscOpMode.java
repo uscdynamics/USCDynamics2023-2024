@@ -109,10 +109,10 @@ public abstract class UscOpMode extends LinearOpMode {
         }
     }
     public void setUpDrivetrain() {
-        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft"); // Motor 0
-        backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 1
-        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
-        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
+        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft"); // Motor 3
+        backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 2
+        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 1
+        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 0
     }
     public void drivetrainDirection(boolean forward){
         if (forward){
@@ -142,7 +142,7 @@ public abstract class UscOpMode extends LinearOpMode {
         armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         currentArmPosition = ((armMotor1.getCurrentPosition() + armMotor2.getCurrentPosition())/2);
         armMotor1.setZeroPowerBehavior(BRAKE);
-        armMotor2.setZeroPowerBehavior(BRAKE);
+//        armMotor2.setZeroPowerBehavior(BRAKE);
     }
     public void setUpClaw(){
         clawServo1 = hardwareMap.get(Servo.class, "clawServo1");

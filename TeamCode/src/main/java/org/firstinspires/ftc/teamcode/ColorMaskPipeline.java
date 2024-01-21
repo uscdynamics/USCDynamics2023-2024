@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Bitmap;
 import android.provider.ContactsContract;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.opencv.android.Utils;
@@ -70,10 +69,10 @@ public class ColorMaskPipeline extends OpenCvPipeline
 
 
 
-        // draw grid lines on our preview
+        // draw grid  lines on our preview
         drawGridLines(input);
 
-        return blueMask;
+        return fullRedMask;
     }
 //    public String getDetection(String color, boolean isBackStage){
 //

@@ -29,8 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -45,8 +43,6 @@ public class ParkRedBottomLeft extends UscOpMode {
     OpenCvWebcam webcam;
     String a = "";
     ColorMaskPipeline pipeline = new ColorMaskPipeline();
-    FtcDashboard dash = FtcDashboard.getInstance();
-    TelemetryPacket pac = new TelemetryPacket();
 
 
     @Override
@@ -55,7 +51,7 @@ public class ParkRedBottomLeft extends UscOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        setUpHardware(true,false,false,true,false, false);
+        // setUpHardware(true,false,false,true,false, false);
         webcam.setPipeline(pipeline);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -73,12 +69,6 @@ public class ParkRedBottomLeft extends UscOpMode {
 
         while (opModeIsActive())
         {
-            pac.put("bluL",""+pipeline.getLeftBlue());
-            pac.put("bluR",""+pipeline.getRightBlue());
-            pac.put("fps",webcam.getFps());
-
-
-            dash.sendTelemetryPacket(pac);
 
 
 //

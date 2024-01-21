@@ -49,8 +49,10 @@ public class ParkBlueBottomRight extends UscOpMode {
     {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        webcam2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), cameraMonitorViewId);
+
+        int[] viewportContainerIds = OpenCvCameraFactory.getInstance().splitLayoutForMultipleViewports(cameraMonitorViewId,2,OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[0]);
+        webcam2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[1]);
 
         // setUpHardware(true,false,false,false,false);
         webcam1.setPipeline(pipeline1);
@@ -80,36 +82,21 @@ public class ParkBlueBottomRight extends UscOpMode {
             {
             }
         });
-        telemetry.addLine("Waiting for start");
+        telemetry.addLine("Waiting for start"); 
 
         telemetry.update();
         waitForStart();
         sleep(1500);
-
         while (opModeIsActive())
         {
+            telemetry.addData("blue RIGHT",""+pipeline1.getRightBlue());
+            telemetry.addData("blue lefff",""+pipeline1.getLeftBlue());
+            telemetry.addData("222blue RIGHT", ""+pipeline2.getRightBlue());
+            telemetry.addData("222blue leff",""+pipeline2.getLeftBlue());
+            telemetry.update();
 
 
-//            // left?
-//            if (pipeline.getDetection("blue",true).equals("right")){
-//                telemetry.addData("Detection", "RIGHTY ");
-//                 telemetry.update();
-//                //strafeLeft(250, 1000);
-//            }
-//            //right
-//            else if (pipeline.getDetection("blue",true).equals("middle")){
-//                telemetry.addData("Detection", "middley ");
-//                telemetry.update();
-//                //strafeRight(250, 1000);
-//            }
-//            else{
-//                telemetry.addData("Detection", "left or nothing ");
-//                telemetry.update();
-//
-//              //  moveBackward(100,1000);
-//
-//
-//            }
+
 
         }
     }
