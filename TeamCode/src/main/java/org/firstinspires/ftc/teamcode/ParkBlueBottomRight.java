@@ -89,10 +89,10 @@ public class ParkBlueBottomRight extends UscOpMode {
         sleep(1500);
         while (opModeIsActive())
         {
-            telemetry.addData("blue RIGHT",""+pipeline1.getRightBlue());
-            telemetry.addData("blue lefff",""+pipeline1.getLeftBlue());
-            telemetry.addData("222blue RIGHT", ""+pipeline2.getRightBlue());
-            telemetry.addData("222blue leff",""+pipeline2.getLeftBlue());
+            telemetry.addData("blue RIGHT",""+pipeline1.getRightRed());
+            telemetry.addData("blue lefff",""+pipeline1.getLeftRed());
+            telemetry.addData("222blue RIGHT", ""+pipeline2.getRightRed());
+            telemetry.addData("222blue leff",""+pipeline2.getLeftRed());
             telemetry.update();
 
 

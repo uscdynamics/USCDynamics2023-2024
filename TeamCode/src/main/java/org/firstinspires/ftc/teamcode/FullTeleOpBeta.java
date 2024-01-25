@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class FullTeleOpBeta extends UscOpMode{
     public void runOpMode(){
-        setUpHardware(true, true, true, false, false, true);
+        setUpHardware(true, true, true, true, true, true);
         waitForStart();
         double speedX = 0.75 * SPEED_MAX;
         double strafeSpeedX = STRAFE_SPEED;
@@ -16,7 +16,18 @@ public class FullTeleOpBeta extends UscOpMode{
         final double PWRSCALER = 3;
         boolean speedButtonOn = false;
 
+        boolean isRightTriggerPressed = false;
+        boolean isLeftTriggerPressed = false;
+
+        boolean clawOpen = true;
+        boolean clawInPickPosition = true;
+        clawRotation.setPosition(CLAW_ROTATION_PLACE);
+        clawServo1.setPosition(OPEN_CLAW_1);
+        clawServo2.setPosition(OPEN_CLAW_2);
+
         while (opModeIsActive()) {
+            //claw chicanery
+
             telemetry.update();
             // Inversion
             if (this.gamepad1.dpad_up){
@@ -90,6 +101,44 @@ public class FullTeleOpBeta extends UscOpMode{
             calculatePosition(detectedObjects);
             telemetry.addData("Average X: ", Math.round(posX));
             telemetry.addData("Average Y: ", Math.round(posY));
+            // Claw Code
+            // Toggle option for triggers to open/close claw
+            if(this.gamepad1.left_trigger > 0 && currentArmPosition > SAFETY_CLAW_SWING_ARM_HEIGHT) {
+                if(!isLeftTriggerPressed) {
+                    clawInPickPosition = !clawInPickPosition;
+                    if(clawInPickPosition) {
+                        clawRotation.setPosition(CLAW_ROTATION_PICK);
+                    }
+                    else {
+                        clawRotation.setPosition(CLAW_ROTATION_PLACE);
+                    }
+                }
+                isLeftTriggerPressed = true;
+            }
+            else {
+                isLeftTriggerPressed = false;
+            }
+
+            // Toggle option for triggers to open/close claw
+            if(this.gamepad1.right_trigger > 0) {
+                if(!isRightTriggerPressed) {
+                    clawOpen = !clawOpen;
+                    if(clawOpen) {
+                        clawServo1.setPosition(OPEN_CLAW_1);
+                        clawServo2.setPosition(OPEN_CLAW_2);
+                    }
+                    else {
+                        clawServo1.setPosition(CLOSE_CLAW_1);
+                        clawServo2.setPosition(CLOSE_CLAW_2);
+                    }
+                }
+                isRightTriggerPressed = true;
+            }
+            else {
+                isRightTriggerPressed = false;
+            }
+            telemetry.addData(""+(clawOpen?"YAAA":"NOooo"),"");
+            telemetry.addData("claw1",""+clawServo1.getPosition());
 
         }
     }

@@ -40,84 +40,65 @@ import org.openftc.easyopencv.OpenCvWebcam;
 @Autonomous(name="Robot: ParkRedBottomLeft", group="Robot")
 
 public class ParkRedBottomLeft extends UscOpMode {
-    OpenCvWebcam webcam;
-    String a = "";
-    ColorMaskPipeline pipeline = new ColorMaskPipeline();
-
-
+    OpenCvWebcam webcam1;
+    OpenCvWebcam webcam2;
+    ColorMaskPipeline pipeline1 = new ColorMaskPipeline();
+    ColorMaskPipeline pipeline2 = new ColorMaskPipeline();
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
+        waitForStart();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        // setUpHardware(true,false,false,true,false, false);
-        webcam.setPipeline(pipeline);
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+
+        int[] viewportContainerIds = OpenCvCameraFactory.getInstance().splitLayoutForMultipleViewports(cameraMonitorViewId, 2, OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
+        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[0]);
+        webcam2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[1]);
+
+        // setUpHardware(true,false,false,false,false);
+        webcam1.setPipeline(pipeline1);
+        webcam2.setPipeline(pipeline2);
+
+        webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+            public void onOpened() {
+                webcam1.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
+
             @Override
-            public void onError(int errorCode)
-            {
+            public void onError(int errorCode) {
             }
         });
-
-
-        while (opModeIsActive())
-        {
-
-
-//
-//            if (pipeline.getDetection("red",true).equals("right")){
-//                telemetry.addData("Detection", "RIGHTY ");
-//                 telemetry.update();
-//                 strafeLeft(30,60);
-//                moveForward(810,900);
-//                 turnRight(90,800);
-//                moveForward(80,50);
-//                clawServo1.setPosition(OPEN_CLAW_1);
-//                clawServo2.setPosition(OPEN_CLAW_2);
-//
-//            }
-//            //right
-//            else if (pipeline.getDetection("red",true).equals("middle")){
-//                strafeLeft(30,60);
-//
-//                telemetry.addData("Detection", "middley ");
-//                telemetry.update();
-//                moveForward(1100,800);
-//                clawServo1.setPosition(OPEN_CLAW_1);
-//                clawServo2.setPosition(OPEN_CLAW_2);
-//               // moveBackward(35,1000);
-//
-//
-//            }
-//            else{
-//                strafeLeft(30,60);
-//
-//                telemetry.addData("Detection", "left or nothing ");
-//                telemetry.update();
-//                moveForward(810,800);
-//                turnLeft(88,800);
-//                moveForward(80,50);
-//                clawServo1.setPosition(.14);
-//                clawServo2.setPosition(.14);
-//                clawServo1.setPosition(OPEN_CLAW_1);
-//                clawServo2.setPosition(OPEN_CLAW_2);
-//
-
-
-              //  moveBackward(100,1000);
-
-
+        webcam2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam2.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
+
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
+        while((pipeline1.getLeftRed() > 0 && pipeline2.getLeftRed() > 0) == false){
+            telemetry.addData("waiting for cams to load","hopfully we are not fucked");
             telemetry.update();
+        }
+        sleep(100);
 
 
+        if(pipeline1.getLeftRed() > pipeline1.getRightRed() && pipeline2.getRightRed() < pipeline1.getLeftRed()){
+            telemetry.addData("pos","LEFFF");
+        }
+        else if(pipeline2.getRightRed() > pipeline2.getLeftRed() && pipeline2.getRightRed() > pipeline1.getLeftRed()){
+            telemetry.addData("pos","RIGGGGGHTHTHTHGITIRII");
 
-        }}
+        }
+        else{
+            telemetry.addData("pos","mid");
+        }
+        telemetry.addData("lef1",""+pipeline1.getLeftRed());
+        telemetry.addData("lef1",""+pipeline1.getRightRed());
 
+
+        telemetry.update();
+
+    }}

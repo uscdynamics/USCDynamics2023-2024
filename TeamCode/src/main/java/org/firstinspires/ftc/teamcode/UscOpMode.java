@@ -40,8 +40,14 @@ public abstract class UscOpMode extends LinearOpMode {
     protected DcMotorEx armMotor1;
     protected DcMotorEx armMotor2;
     protected double posX;
+    final double SAFETY_CLAW_SWING_ARM_HEIGHT = 900;
+
     protected double posY;
     protected int currentArmPosition;
+
+    final double CLAW_ROTATION_PUT = 0.9;//auto
+    final double CLAW_ROTATION_PLACE = 0.;
+    final double CLAW_ROTATION_PICK = 0.28;
     private AprilTagProcessor aprilTag;
     protected ArrayList<DetectionStorage> detectedObjects;
 
@@ -81,10 +87,10 @@ public abstract class UscOpMode extends LinearOpMode {
     protected /*final*/ float servoGrabPosition;
     protected final double AIRPLANE_HOLD_POS = 0.7;
     protected final double AIRPLANE_RELEASE_POS = -1.0;
-    final double CLOSE_CLAW_1 = 0.39+ .03;
-    final double CLOSE_CLAW_2 = 0.23-.01;
+    final double CLOSE_CLAW_1 = 0.3;
+    final double CLOSE_CLAW_2 = 0.4;
     final double OPEN_CLAW_1 = 0.0;
-    final double OPEN_CLAW_2 = 0.3;
+    final double OPEN_CLAW_2 = 0.5;
 
 
     public void setUpHardware(boolean drivetrain, boolean cameras, boolean arm, boolean claw, boolean intake, boolean launch){
@@ -146,7 +152,7 @@ public abstract class UscOpMode extends LinearOpMode {
     }
     public void setUpClaw(){
         clawServo1 = hardwareMap.get(Servo.class, "clawServo1");
-        clawServo2 = hardwareMap.get(Servo.class, "clawServo2");
+        clawServo2 = hardwareMap.get(Servo. class, "clawServo2");
         clawRotation = hardwareMap.get(Servo.class, "clawRotation");
     }
     public void setUpIntake(){

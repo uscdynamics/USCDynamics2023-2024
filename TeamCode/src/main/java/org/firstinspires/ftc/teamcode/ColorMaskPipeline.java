@@ -28,8 +28,8 @@ public class ColorMaskPipeline extends OpenCvPipeline
     Mat fullRedMask = new Mat();
 
 
-    Scalar lower1 = new Scalar(0,120,120);
-    Scalar lower2 = new Scalar(160,120,120);
+    Scalar lower1 = new Scalar(0,100,70);
+    Scalar lower2 = new Scalar(160,100,70);
     Scalar upper1 = new Scalar(18,255,255);
     Scalar upper2 = new Scalar(180,255,255);
 //blue
