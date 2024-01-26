@@ -15,6 +15,7 @@ public class FullTeleOpBeta extends UscOpMode{
         double desiredArmPosition = 0;
         final double PWRSCALER = 3;
         boolean speedButtonOn = false;
+        boolean intakeOn = false;
 
         boolean isRightTriggerPressed = false;
         boolean isLeftTriggerPressed = false;
@@ -85,6 +86,7 @@ public class FullTeleOpBeta extends UscOpMode{
                 armMotor2.setVelocity(adjustFactor);
             }
             telemetry.addData("Arm Position: ", currentArmPosition);
+
             // Airplane
             if (this.gamepad1.dpad_left){
                 planeLauncher.setPosition(AIRPLANE_RELEASE_POS);
@@ -92,6 +94,13 @@ public class FullTeleOpBeta extends UscOpMode{
             if (this.gamepad1.dpad_right){
                 planeLauncher.setPosition(AIRPLANE_HOLD_POS);
             }
+
+            // intake
+            if (this.gamepad1.y) {
+                intakeOn = !intakeOn;
+                intake.setVelocity(intakeOn ? INTAKE_SPEED : 0);
+            }
+
             // April Tags
             detectedObjects = processAprilTags();
             detectedObjects.trimToSize();
