@@ -46,8 +46,8 @@ public abstract class UscOpMode extends LinearOpMode {
     protected int currentArmPosition;
 
     final double CLAW_ROTATION_PUT = 0.9;//auto
-    final double CLAW_ROTATION_PLACE = 0.;
-    final double CLAW_ROTATION_PICK = 0.28;
+    final double CLAW_ROTATION_PLACE = 0.5;
+    final double CLAW_ROTATION_PICK = 0.30;
     private AprilTagProcessor aprilTag;
     protected ArrayList<DetectionStorage> detectedObjects;
 
@@ -80,8 +80,9 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final double SPEED_MAX = 1.0;
     protected final double STRAFE_SPEED = 0.75;
     protected final double SPEED_HALF = 0.5;
-    protected final int ARM_SPEED = 800;
-    protected final int MAX_ARM_HEIGHT = 3100;
+    protected final int ARM_SPEED = 1800;
+    protected final double INTAKE_SPEED = 1.0d;
+    protected final int MAX_ARM_HEIGHT = 2700;
     protected final int MIN_ARM_HEIGHT = 5;
     protected /*final*/ float servoPlacePosition;
     protected /*final*/ float servoGrabPosition;
@@ -157,6 +158,8 @@ public abstract class UscOpMode extends LinearOpMode {
     }
     public void setUpIntake(){
         intake = hardwareMap.get(DcMotorEx.class, "intake");
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
     }
     public void setUpAirplane(){
         planeLauncher = hardwareMap.get(Servo.class, "launcher");

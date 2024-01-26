@@ -16,13 +16,16 @@ public class FullTeleOpBeta extends UscOpMode{
         final double PWRSCALER = 3;
         boolean speedButtonOn = false;
         boolean intakeOn = false;
+        boolean rotationPick = true;
 
         boolean isRightTriggerPressed = false;
         boolean isLeftTriggerPressed = false;
+        boolean isYPressed = false;
+        boolean isBackPressed = false;
 
         boolean clawOpen = true;
         boolean clawInPickPosition = true;
-        clawRotation.setPosition(CLAW_ROTATION_PLACE);
+        clawRotation.setPosition(CLAW_ROTATION_PICK);
         clawServo1.setPosition(OPEN_CLAW_1);
         clawServo2.setPosition(OPEN_CLAW_2);
 
@@ -65,27 +68,81 @@ public class FullTeleOpBeta extends UscOpMode{
                 backLeft.setPower(strafeSpeedX);
                 backRight.setPower(strafeSpeedX);
             }
+
             // Arm
-            currentArmPosition = (armMotor2.getCurrentPosition() - armMotor1.getCurrentPosition())/2;
-            currentArm = ARM_SPEED * scaleArmMovement(currentArmPosition);
-            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
-                armMotor1.setVelocity(-currentArm);
-                armMotor2.setVelocity(currentArm);
-                desiredArmPosition = currentArmPosition;
+            currentArmPosition = (Math.abs(armMotor2.getCurrentPosition()) + Math.abs(armMotor1.getCurrentPosition())) / 2;
+            currentArm = ARM_SPEED;
+            double armRange = MAX_ARM_HEIGHT - MIN_ARM_HEIGHT;
+            double armPercent = (currentArmPosition - MIN_ARM_HEIGHT) / armRange;
+            double midPoint = (.5d * armRange) + MIN_ARM_HEIGHT;
+
+            double minSpeed = 0.1d * ARM_SPEED;
+
+            double adjustedSpeed = ARM_SPEED;
+            if (currentArmPosition <= MIN_ARM_HEIGHT) {
+                adjustedSpeed = 0d;
+            } else if (currentArmPosition >= MAX_ARM_HEIGHT) {
+                adjustedSpeed = 0d;
+            } else if (currentArmPosition < midPoint) {
+                // Speed decreases as the current position gets closer to the minimum position
+                adjustedSpeed = minSpeed + ((currentArmPosition - MIN_ARM_HEIGHT) * (ARM_SPEED - minSpeed)) / (midPoint - MIN_ARM_HEIGHT);
+            } else {
+                // Speed decreases as the current position gets closer to the maximum position
+                adjustedSpeed = minSpeed + ((MAX_ARM_HEIGHT - currentArmPosition) * (ARM_SPEED - minSpeed)) / (MAX_ARM_HEIGHT - midPoint);
             }
-            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
+            currentArm = adjustedSpeed;
+
+
+//            if (armPercent > 0.8d) {
+//                currentArm = ARM_SPEED * 0.35d;
+//            }
+//            if (armPercent < 0.2d) {
+//                currentArm = ARM_SPEED * 0.35d;
+//            }
+
+            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT) {
+                currentArm = Math.max(currentArm, minSpeed); // Ensure we can move up - no get stuck
                 armMotor1.setVelocity(currentArm);
                 armMotor2.setVelocity(-currentArm);
-                desiredArmPosition = currentArmPosition;
+                if (armPercent > 0.3d && clawRotation.getPosition() < CLAW_ROTATION_PLACE) {
+                    clawRotation.setPosition(CLAW_ROTATION_PLACE);
+                }
+            }
+            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
+                currentArm = Math.max(currentArm, minSpeed); // Ensure we can move up - no get stuck
+                armMotor1.setVelocity(-currentArm);
+                armMotor2.setVelocity(currentArm);
+                if (armPercent < 0.5d && clawRotation.getPosition() > CLAW_ROTATION_PICK) {
+                    clawRotation.setPosition(CLAW_ROTATION_PICK);
+                }
             }
             else {
-                double adjustFactor = 0;
-                if(desiredArmPosition > 100 && currentArmPosition < desiredArmPosition)
-                    adjustFactor = 10;
-                armMotor1.setVelocity(-adjustFactor);
-                armMotor2.setVelocity(adjustFactor);
+                armMotor1.setVelocity(0);
+                armMotor2.setVelocity(0);
             }
-            telemetry.addData("Arm Position: ", currentArmPosition);
+
+//            currentArm = ARM_SPEED * scaleArmMovement(currentArmPosition);
+//            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
+//                armMotor1.setVelocity(-currentArm);
+//                armMotor2.setVelocity(currentArm);
+//                desiredArmPosition = currentArmPosition;
+//            }
+//            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
+//                armMotor1.setVelocity(currentArm);
+//                armMotor2.setVelocity(-currentArm);
+//                desiredArmPosition = currentArmPosition;
+//            }
+//            else {
+//                double adjustFactor = 0;
+//                if(desiredArmPosition > 100 && currentArmPosition < desiredArmPosition)
+//                    adjustFactor = 10;
+//                armMotor1.setVelocity(-adjustFactor);
+//                armMotor2.setVelocity(adjustFactor);
+//            }
+
+            telemetry.addData("Arm Position 1: ", armMotor1.getCurrentPosition());
+            telemetry.addData("Arm Position 2: ", armMotor2.getCurrentPosition());
+            telemetry.addData("Arm Position X: ", currentArmPosition);
 
             // Airplane
             if (this.gamepad1.dpad_left){
@@ -97,8 +154,26 @@ public class FullTeleOpBeta extends UscOpMode{
 
             // intake
             if (this.gamepad1.y) {
-                intakeOn = !intakeOn;
-                intake.setVelocity(intakeOn ? INTAKE_SPEED : 0);
+                if (!isYPressed) {
+                    intakeOn = !intakeOn;
+                    intake.setPower(intakeOn ? INTAKE_SPEED : 0.0d);
+                }
+                isYPressed = true;
+            }
+            else {
+                isYPressed = false;
+            }
+
+            // rotation
+            if (this.gamepad1.back) {
+                if (!isBackPressed) {
+                    rotationPick = !rotationPick;
+                    clawRotation.setPosition(rotationPick ? CLAW_ROTATION_PICK : CLAW_ROTATION_PLACE);
+                }
+                isBackPressed = true;
+            }
+            else {
+                isBackPressed = false;
             }
 
             // April Tags
