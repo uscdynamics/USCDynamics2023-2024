@@ -1,20 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Bitmap;
-import android.provider.ContactsContract;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import org.opencv.core.Core;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @Disabled
-public class ColorMaskPipeline extends OpenCvPipeline
+public class NoNoColorMaskPipeline extends OpenCvPipeline
 {
     double leftRed = 0;
     double midRed = 0;

@@ -40,12 +40,14 @@ public class FullTeleOpBeta extends UscOpMode{
             }
             else if (this.gamepad1.dpad_down){
                 drivetrainDirection(false);
-                telemetry.addData("", "!!!!!!!!!!!!!!!!!!WARNING: REVERSE MODE!!!!!!!!!!!!!!!!!!!!");
+                telemetry.addData( "", "!!!!!!!!!!!!!!!!!!WARNING: REVERSE MODE!!!!!!!!!!!!!!!!!!!!");
                 telemetry.addData("Direction: ", "Reverse");
             }
             // Drive
-            currentX = scaleMovement(this.gamepad1.right_stick_x);
-            currentY = scaleMovement(this.gamepad1.left_stick_y);
+            telemetry.addData("Turn: ", this.gamepad1.right_stick_x);
+            telemetry.addData("Throttle: ", this.gamepad1.left_stick_y);
+            currentX = this.gamepad1.right_stick_x;
+            currentY = this.gamepad1.left_stick_y;
             double throttle = -currentY * speedX;
             // Allow second stick to turn also
             double turn = currentX * speedX;
@@ -57,14 +59,14 @@ public class FullTeleOpBeta extends UscOpMode{
             backRight.setPower(rightSpeed);
             // Strafe
             if (this.gamepad1.left_bumper) {
-                frontLeft.setPower(strafeSpeedX - 0.10);
-                frontRight.setPower(strafeSpeedX - 0.10);
+                frontLeft.setPower(strafeSpeedX );
+                frontRight.setPower(strafeSpeedX );
                 backLeft.setPower(-strafeSpeedX);
                 backRight.setPower(-strafeSpeedX);
             }
             if (this.gamepad1.right_bumper) {
-                frontLeft.setPower(-strafeSpeedX + 0.10);
-                frontRight.setPower(-strafeSpeedX + 0.10);
+                frontLeft.setPower(-strafeSpeedX );
+                frontRight.setPower(-strafeSpeedX );
                 backLeft.setPower(strafeSpeedX);
                 backRight.setPower(strafeSpeedX);
             }
@@ -76,7 +78,7 @@ public class FullTeleOpBeta extends UscOpMode{
             double armPercent = (currentArmPosition - MIN_ARM_HEIGHT) / armRange;
             double midPoint = (.5d * armRange) + MIN_ARM_HEIGHT;
 
-            double minSpeed = 0.1d * ARM_SPEED;
+            double minSpeed = 0.3d * ARM_SPEED;
 
             double adjustedSpeed = ARM_SPEED;
             if (currentArmPosition <= MIN_ARM_HEIGHT) {
@@ -223,6 +225,12 @@ public class FullTeleOpBeta extends UscOpMode{
             }
             telemetry.addData(""+(clawOpen?"YAAA":"NOooo"),"");
             telemetry.addData("claw1",""+clawServo1.getPosition());
+            telemetry.addData("posx",""+posX);
+            telemetry.addData("posY",""+posY);
+            telemetry.update();
+
+
+
 
         }
     }

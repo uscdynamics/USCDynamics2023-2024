@@ -37,12 +37,12 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name="Robot: ParkBlueBottomRight", group="Robot")
+@Autonomous(name="don't use", group="Robot")
 
-public class ParkBlueBottomRight extends UscOpMode {
+public class RedCamTest extends UscOpMode {
     OpenCvWebcam webcam1;
     OpenCvWebcam webcam2;
-    ColorMaskPipeline pipeline1 = new ColorMaskPipeline();
+    //ColorMaskPipeline pipeline1 = new ColorMaskPipeline();
     ColorMaskPipeline pipeline2 = new ColorMaskPipeline();
     String place = "";
     @Override
@@ -52,23 +52,14 @@ public class ParkBlueBottomRight extends UscOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         int[] viewportContainerIds = OpenCvCameraFactory.getInstance().splitLayoutForMultipleViewports(cameraMonitorViewId, 2, OpenCvCameraFactory.ViewportSplitMethod.VERTICALLY);
-        webcam1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[0]);
+        //webcam1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 2"), viewportContainerIds[0]);
         webcam2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), viewportContainerIds[1]);
 
         setUpHardware(true,false,true,true,true,true);
-        webcam1.setPipeline(pipeline1);
+        //webcam1.setPipeline(pipeline1);
         webcam2.setPipeline(pipeline2);
 
-        webcam1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                webcam1.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
 
-            @Override
-            public void onError(int errorCode) {
-            }
-        });
         webcam2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -79,44 +70,8 @@ public class ParkBlueBottomRight extends UscOpMode {
             public void onError(int errorCode) {
             }
         });
-        while((pipeline1.getLeftBlue() > 0 && pipeline2.getLeftBlue() > 0) == false){
-            telemetry.addData("waiting for cams to load","hopfully we are not fucked");
-            telemetry.update();
-        }
-        sleep(100);
 
-
-        if(pipeline1.getLeftBlue() > pipeline1.getRightBlue() && pipeline2.getRightBlue() < pipeline1.getLeftBlue()){
-            telemetry.addData("pos","LEFFF");
-            place = "left";
-        }
-        else if(pipeline2.getRightBlue() > pipeline2.getLeftBlue() && pipeline2.getRightBlue() > pipeline1.getLeftBlue()){
-            telemetry.addData("pos","RIGGGGGHTHTHTHGITIRII");
-            place = "right";
-        }
-        else{
-            telemetry.addData("pos","mid");
-            place = "mid";
-        }
-        telemetry.addData("lef1",""+pipeline1.getLeftRed());
-        telemetry.addData("lef1",""+pipeline1.getRightRed());
-
-
-        clawServo1.setPosition(CLOSE_CLAW_1);
-        clawServo2.setPosition(CLOSE_CLAW_2);
-        clawRotation.setPosition(CLAW_ROTATION_PICK-.05);
-        resetMotors();
-
-
-
-        clawServo1.setPosition(OPEN_CLAW_1);
-        clawServo2.setPosition(OPEN_CLAW_2);
-        moveBackward(35,300);
-
-
-
-
-        sleep(7000);
+        sleep(23000);
 
 
 

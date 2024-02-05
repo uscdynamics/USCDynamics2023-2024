@@ -46,8 +46,8 @@ public abstract class UscOpMode extends LinearOpMode {
     protected int currentArmPosition;
 
     final double CLAW_ROTATION_PUT = 0.9;//auto
-    final double CLAW_ROTATION_PLACE = 0.5;
-    final double CLAW_ROTATION_PICK = 0.30;
+    final double CLAW_ROTATION_PLACE = 0.6;
+    final double CLAW_ROTATION_PICK = 0.35;
     private AprilTagProcessor aprilTag;
     protected ArrayList<DetectionStorage> detectedObjects;
 
@@ -82,8 +82,8 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final double SPEED_HALF = 0.5;
     protected final int ARM_SPEED = 1800;
     protected final double INTAKE_SPEED = 1.0d;
-    protected final int MAX_ARM_HEIGHT = 2700;
-    protected final int MIN_ARM_HEIGHT = 5;
+    protected final int MAX_ARM_HEIGHT = 3000;
+    protected final int MIN_ARM_HEIGHT = -1;
     protected /*final*/ float servoPlacePosition;
     protected /*final*/ float servoGrabPosition;
     protected final double AIRPLANE_HOLD_POS = 0.7;
@@ -149,7 +149,7 @@ public abstract class UscOpMode extends LinearOpMode {
         armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         currentArmPosition = ((armMotor1.getCurrentPosition() + armMotor2.getCurrentPosition())/2);
         armMotor1.setZeroPowerBehavior(BRAKE);
-//        armMotor2.setZeroPowerBehavior(BRAKE);
+        armMotor2.setZeroPowerBehavior(BRAKE);
     }
     public void setUpClaw(){
         clawServo1 = hardwareMap.get(Servo.class, "clawServo1");
@@ -222,10 +222,10 @@ public abstract class UscOpMode extends LinearOpMode {
     }
 
     protected void motorsStrafeRight() {
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD); //-
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE); //+
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD); //-
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE); //+
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE); //-
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD); //+
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE); //-
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD); //+
     }
 
     protected void motorsLeft() {
