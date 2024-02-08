@@ -45,6 +45,10 @@ public class ParkBlueBottomRight extends UscOpMode {
     ColorMaskPipeline pipeline1 = new ColorMaskPipeline();
     ColorMaskPipeline pipeline2 = new ColorMaskPipeline();
     String place = "";
+    int aaryan = 250;
+    int jai = 700;
+    int anthony = 250;
+
     @Override
     public void runOpMode() {
         waitForStart();
@@ -100,18 +104,20 @@ public class ParkBlueBottomRight extends UscOpMode {
         }
         telemetry.addData("lef1",""+pipeline1.getLeftRed());
         telemetry.addData("lef1",""+pipeline1.getRightRed());
+        moveForward(1000,750);
+        if(place.equals("right")){
+            strafeRight(aaryan,jai);// yaaaaaaaa
+        }
+        else if(place.equals("left")){
+            strafeLeft(aaryan,jai);
+        }
+        else{
+            moveForward(anthony,jai);
+
+        }
 
 
-        clawServo1.setPosition(CLOSE_CLAW_1);
-        clawServo2.setPosition(CLOSE_CLAW_2);
-        clawRotation.setPosition(CLAW_ROTATION_PICK-.05);
-        resetMotors();
 
-
-
-        clawServo1.setPosition(OPEN_CLAW_1);
-        clawServo2.setPosition(OPEN_CLAW_2);
-        moveBackward(35,300);
 
 
 
