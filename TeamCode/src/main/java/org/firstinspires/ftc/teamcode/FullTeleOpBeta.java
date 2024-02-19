@@ -4,6 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
 public class FullTeleOpBeta extends UscOpMode{
+
+    boolean isKindaEqualTo(double a, double b) {
+        double uncertainty = 0.1;
+        telemetry.addData("isKindaEqualTo: ", "" + Math.abs(a) + "-" + Math.abs(b) + "<" + uncertainty + "=" + ((Math.abs(a) - Math.abs(b)) < uncertainty));
+        return (Math.abs((Math.abs(a) - Math.abs(b))) < uncertainty);
+    }
+
     public void runOpMode(){
 
         setUpHardware(true, true, true, true, true, true);
@@ -16,17 +23,21 @@ public class FullTeleOpBeta extends UscOpMode{
         double currentX;
         double currentY;
         double currentArm;
-        double targetArm;
-        double desiredArmPosition = 0;
+
+        Integer desiredArmPosition1 = null;
+        Integer desiredArmPosition2 = null;
+
         final double PWRSCALER = 3;
         boolean speedButtonOn = false;
         boolean intakeOn = false;
         boolean rotationPick = true;
         boolean isLeftStickPressed = false;
-        boolean armAdjust = false;
+        boolean isHeadingToPick = false;
 
         boolean isRightTriggerPressed = false;
         boolean isLeftTriggerPressed = false;
+        boolean isAPressed = false;
+        boolean isBPressed = false;
         boolean isYPressed = false;
         boolean isBackPressed = false;
 
@@ -36,17 +47,13 @@ public class FullTeleOpBeta extends UscOpMode{
         clawServo1.setPosition(OPEN_CLAW_1);
         clawServo2.setPosition(OPEN_CLAW_2);
 
-        targetArm = 0;
-
         while (opModeIsActive()) {
             //claw chicanery
 
-            telemetry.update();
             // Inversion
             if (this.gamepad1.dpad_up){
                 drivetrainDirection(true);
                 telemetry.addData("Direction: ", "Forward");
-                arrow.setPosition(0.625);
                 setFrontLights(true, false);
                 setBackLights(false, true);
             }
@@ -54,7 +61,6 @@ public class FullTeleOpBeta extends UscOpMode{
                 drivetrainDirection(false);
                 telemetry.addData( "", "!!!!!!!!!!!!!!!!!!WARNING: REVERSE MODE!!!!!!!!!!!!!!!!!!!!");
                 telemetry.addData("Direction: ", "Reverse");
-                arrow.setPosition(0.0);
                 setFrontLights(false, true);
                 setBackLights(true, false);
             }
@@ -88,7 +94,7 @@ public class FullTeleOpBeta extends UscOpMode{
             currentY = this.gamepad1.left_stick_y;
             double throttle = -currentY * speedX;
             // Allow second stick to turn also
-            double turn = currentX * speedX;
+            double turn = currentX * speedX / 2.0;
             double leftSpeed = -1 * (throttle + turn);
             double rightSpeed = throttle - turn;
             frontLeft.setPower(leftSpeed);
@@ -132,70 +138,94 @@ public class FullTeleOpBeta extends UscOpMode{
             }
             currentArm = adjustedSpeed;
 
-//            if (armPercent > 0.8d) {
-//                currentArm = ARM_SPEED * 0.35d;
-//            }
-//            if (armPercent < 0.2d) {
-//                currentArm = ARM_SPEED * 0.35d;
-//            }
+            // Any time the arm is above threshold, move rotation to PLACE
+            if (armPercent > 0.60d && !isKindaEqualTo(clawRotation.getPosition(), CLAW_ROTATION_PLACE)) {
+                clawRotation.setPosition(CLAW_ROTATION_PLACE);
+            }
+            // Any time the arm is below threshold, move rotation to PICK
+            if (armPercent < 0.55d && !isKindaEqualTo(clawRotation.getPosition(), CLAW_ROTATION_PICK)) {
+                clawRotation.setPosition(CLAW_ROTATION_PICK);
+            }
+
+            if(this.gamepad1.b) {
+                if (!isBPressed) {
+                    isHeadingToPick = true;
+
+                    // Make sure the claw opens on the way down
+                    if (!clawOpen) {
+                        clawOpen = true;
+                        clawServo1.setPosition(OPEN_CLAW_1);
+                        clawServo2.setPosition(OPEN_CLAW_2);
+                    }
+                }
+                isBPressed = true;
+            }
+            else {
+                isBPressed = false;
+            }
 
             if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT) {
                 currentArm = Math.max(currentArm, minSpeed); // Ensure we can move up - no get stuck
                 armMotor1.setVelocity(currentArm);
                 armMotor2.setVelocity(-currentArm);
-                if (armPercent > 0.3d && clawRotation.getPosition() < CLAW_ROTATION_PLACE) {
-                    clawRotation.setPosition(CLAW_ROTATION_PLACE);
+
+                desiredArmPosition1 = (Integer)armMotor1.getCurrentPosition();
+                desiredArmPosition2 = (Integer)armMotor2.getCurrentPosition();
+
+                // On initial press, make sure claw closed
+                if (!isAPressed) {
+                    isHeadingToPick = false;
+
+                    // Make sure the claw opens on the way down
+                    if (clawOpen) {
+                        clawOpen = false;
+                        clawServo1.setPosition(CLOSE_CLAW_1);
+                        clawServo2.setPosition(CLOSE_CLAW_2);
+                    }
                 }
-                targetArm = currentArmPosition;
-            }
-            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
-                currentArm = Math.max(currentArm, minSpeed); // Ensure we can move up - no get stuck
-                armMotor1.setVelocity(-currentArm);
-                armMotor2.setVelocity(currentArm);
-                if (armPercent < 0.5d && clawRotation.getPosition() > CLAW_ROTATION_PICK) {
-                    clawRotation.setPosition(CLAW_ROTATION_PICK);
-                }
-                targetArm = currentArmPosition;
+                isAPressed = true;
             }
             else {
-                armMotor1.setVelocity(0);
-                armMotor2.setVelocity(0);
+                isAPressed = false;
+
+                if (isHeadingToPick && currentArmPosition > MIN_ARM_HEIGHT){
+                    desiredArmPosition1 = null;
+                    desiredArmPosition2 = null;
+
+                    currentArm = Math.max(currentArm, minSpeed); // Ensure we can move up - no get stuck
+                    armMotor1.setVelocity(-currentArm);
+                    armMotor2.setVelocity(currentArm);
+                }
+                else {
+                    if (isHeadingToPick)
+                        isHeadingToPick = false;
+                    else {
+                        // Adjust if needed
+                        if (desiredArmPosition1 != null && armMotor1.getCurrentPosition() < desiredArmPosition1.intValue()) {
+                            telemetry.addData("Adjust arm1: ", desiredArmPosition1.intValue() - armMotor1.getCurrentPosition());
+                            armMotor1.setVelocity(ARM_SPEED/20.0);
+                        }
+                        else {
+                            armMotor1.setVelocity(0);
+                        }
+                        if (desiredArmPosition2 != null && armMotor2.getCurrentPosition() > desiredArmPosition2.intValue()) {
+                            telemetry.addData("Adjust arm2: ", desiredArmPosition2.intValue() - armMotor2.getCurrentPosition());
+                            armMotor2.setVelocity(-ARM_SPEED/20.0);
+                        }
+                        else {
+                            armMotor2.setVelocity(0);
+                        }
+                    }
+                }
             }
 
-            if (currentArmPosition < (targetArm - ARM_TOLERANCE)){
-                armAdjust = true;
-            }
-            if (currentArmPosition > (targetArm + ARM_TOLERANCE)){
-                armAdjust = false;
-            }
-            if (!this.gamepad1.a && !this.gamepad1.b && armAdjust){
-                armMotor1.setVelocity(-150);
-                armMotor2.setVelocity(150);
-            }
-            telemetry.addData("Target Pos: ", targetArm);
-
-//            currentArm = ARM_SPEED * scaleArmMovement(currentArmPosition);
-//            if(this.gamepad1.a && currentArmPosition < MAX_ARM_HEIGHT){
-//                armMotor1.setVelocity(-currentArm);
-//                armMotor2.setVelocity(currentArm);
-//                desiredArmPosition = currentArmPosition;
-//            }
-//            else if(this.gamepad1.b && currentArmPosition > MIN_ARM_HEIGHT){
-//                armMotor1.setVelocity(currentArm);
-//                armMotor2.setVelocity(-currentArm);
-//                desiredArmPosition = currentArmPosition;
-//            }
-//            else {
-//                double adjustFactor = 0;
-//                if(desiredArmPosition > 100 && currentArmPosition < desiredArmPosition)
-//                    adjustFactor = 10;
-//                armMotor1.setVelocity(-adjustFactor);
-//                armMotor2.setVelocity(adjustFactor);
-//            }
+            telemetry.addData("clawRotation: ", clawRotation.getPosition());
+            telemetry.addData("CLAW_ROTATION_PLACE/CLAW_ROTATION_PICK: ", CLAW_ROTATION_PLACE  + "/" + CLAW_ROTATION_PICK);
 
             telemetry.addData("Arm Position 1: ", armMotor1.getCurrentPosition());
             telemetry.addData("Arm Position 2: ", armMotor2.getCurrentPosition());
             telemetry.addData("Arm Position X: ", currentArmPosition);
+            telemetry.addData("armPercentage: ", armPercent);
 
             // Airplane
             if (this.gamepad1.dpad_right){
@@ -230,31 +260,32 @@ public class FullTeleOpBeta extends UscOpMode{
             }
 
             // April Tags
-            detectedObjects = processAprilTags();
-            detectedObjects.trimToSize();
-            for (int j = 0; j < detectedObjects.size(); j++) {
-                telemetry.addData("Tag " + detectedObjects.get(j).id, detectedObjects.get(j).toString());
-            }
-            calculatePosition(detectedObjects);
+//            detectedObjects = processAprilTags();
+//            detectedObjects.trimToSize();
+//            for (int j = 0; j < detectedObjects.size(); j++) {
+//                telemetry.addData("Tag " + detectedObjects.get(j).id, detectedObjects.get(j).toString());
+//            }
+//            calculatePosition(detectedObjects);
             telemetry.addData("Average X: ", Math.round(posX));
             telemetry.addData("Average Y: ", Math.round(posY));
+
             // Claw Code
             // Toggle option for triggers to open/close claw
-            if(this.gamepad1.left_trigger > 0 && currentArmPosition > SAFETY_CLAW_SWING_ARM_HEIGHT) {
-                if(!isLeftTriggerPressed) {
-                    clawInPickPosition = !clawInPickPosition;
-                    if(clawInPickPosition) {
-                        clawRotation.setPosition(CLAW_ROTATION_PICK);
-                    }
-                    else {
-                        clawRotation.setPosition(CLAW_ROTATION_PLACE);
-                    }
-                }
-                isLeftTriggerPressed = true;
-            }
-            else {
-                isLeftTriggerPressed = false;
-            }
+//            if(this.gamepad1.left_trigger > 0 && currentArmPosition > SAFETY_CLAW_SWING_ARM_HEIGHT) {
+//                if(!isLeftTriggerPressed) {
+//                    clawInPickPosition = !clawInPickPosition;
+//                    if(clawInPickPosition) {
+//                        clawRotation.setPosition(CLAW_ROTATION_PICK);
+//                    }
+//                    else {
+//                        clawRotation.setPosition(CLAW_ROTATION_PLACE);
+//                    }
+//                }
+//                isLeftTriggerPressed = true;
+//            }
+//            else {
+//                isLeftTriggerPressed = false;
+//            }
 
             // Toggle option for triggers to open/close claw
             if(this.gamepad1.right_trigger > 0) {
@@ -276,13 +307,9 @@ public class FullTeleOpBeta extends UscOpMode{
             }
             telemetry.addData(""+(clawOpen?"YAAA":"NOooo"),"");
             telemetry.addData("claw1",""+clawServo1.getPosition());
-            telemetry.addData("posx",""+posX);
-            telemetry.addData("posY",""+posY);
+            telemetry.addData("desiredArmPosition1",""+desiredArmPosition1);
+            telemetry.addData("desiredArmPosition2",""+desiredArmPosition2);
             telemetry.update();
-
-
-
-
         }
     }
 }

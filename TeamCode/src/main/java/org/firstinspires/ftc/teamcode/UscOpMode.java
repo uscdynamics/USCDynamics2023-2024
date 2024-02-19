@@ -50,7 +50,7 @@ public abstract class UscOpMode extends LinearOpMode {
 
     final double CLAW_ROTATION_PUT = 0.9;//auto
     final double CLAW_ROTATION_PLACE = 0.6;
-    final double CLAW_ROTATION_PICK = 0.33;
+    final double CLAW_ROTATION_PICK = 0.35;
     private AprilTagProcessor aprilTag;
     private AprilTagProcessor aprilTag2;
     protected ArrayList<DetectionStorage> detectedObjects;
@@ -85,7 +85,7 @@ public abstract class UscOpMode extends LinearOpMode {
     protected Servo clawServo1;
     protected Servo clawServo2;
     protected Servo clawRotation;
-    protected Servo arrow;
+//    protected Servo arrow;
     protected Servo planeLauncher;
     protected boolean aprilTagCam = false;
 
@@ -97,8 +97,8 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final double SPEED_HALF = 0.5;
     protected final int ARM_SPEED = 2500;
     protected final double INTAKE_SPEED = 1.0d;
-    protected final int MAX_ARM_HEIGHT = 3000;
-    protected final int MIN_ARM_HEIGHT = -1;
+    protected final int MAX_ARM_HEIGHT = 2920;
+    protected final int MIN_ARM_HEIGHT = 40;
     protected /*final*/ float servoPlacePosition;
     protected /*final*/ float servoGrabPosition;
     protected final double AIRPLANE_HOLD_POS = 0.7;
@@ -114,9 +114,9 @@ public abstract class UscOpMode extends LinearOpMode {
         if (drivetrain){
             setUpDrivetrain();
         }
-        if(cameras){
-            setUpCameras();
-        }
+//        if(cameras){
+//            setUpCameras();
+//        }
         if(arm){
             setUpArm();
         }
@@ -128,7 +128,6 @@ public abstract class UscOpMode extends LinearOpMode {
         }
         if(launch){
             setUpAirplane();
-
         }
     }
     public void setUpDrivetrain() {
@@ -136,7 +135,7 @@ public abstract class UscOpMode extends LinearOpMode {
         backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 2
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 1
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 0
-        arrow = hardwareMap.get(Servo.class, "arrow");
+//        arrow = hardwareMap.get(Servo.class, "arrow");
         direction = true;
     }
     public void drivetrainDirection(boolean forward){
