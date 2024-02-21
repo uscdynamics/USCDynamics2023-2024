@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -41,6 +42,8 @@ public abstract class UscOpMode extends LinearOpMode {
     protected DcMotorEx armMotor2;
     protected double posX;
     final double SAFETY_CLAW_SWING_ARM_HEIGHT = 900;
+    protected boolean direction;
+    protected boolean planeArmed;
 
     protected double posY;
     protected int currentArmPosition;
@@ -49,12 +52,23 @@ public abstract class UscOpMode extends LinearOpMode {
     final double CLAW_ROTATION_PLACE = 0.6;
     final double CLAW_ROTATION_PICK = 0.35;
     private AprilTagProcessor aprilTag;
+    private AprilTagProcessor aprilTag2;
     protected ArrayList<DetectionStorage> detectedObjects;
 
     protected static WebcamName camera1;
     protected static WebcamName camera2;
     protected static WebcamName camera3;
     protected static VisionPortal visionPortal;
+    protected static VisionPortal visionPortal2;
+
+    protected DigitalChannel lightFLR;
+    protected DigitalChannel lightFLG;
+    protected DigitalChannel lightFRR;
+    protected DigitalChannel lightFRG;
+    protected DigitalChannel lightBLR;
+    protected DigitalChannel lightBLG;
+    protected DigitalChannel lightBRR;
+    protected DigitalChannel lightBRG;
 
     protected final DetectionStorage TAG_1 = new DetectionStorage(31.0, 12.0, "Tag: 1");
     protected final DetectionStorage TAG_2 = new DetectionStorage(36.0, 12.0, "Tag: 2");
@@ -62,15 +76,16 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final DetectionStorage TAG_4 = new DetectionStorage(102.0, 12.0, "Tag: 4");
     protected final DetectionStorage TAG_5 = new DetectionStorage(108.0, 12.0, "Tag: 5");
     protected final DetectionStorage TAG_6 = new DetectionStorage(114.0, 12.0, "Tag: 6");
-    protected final DetectionStorage TAG_7 = new DetectionStorage(42.0, 144.0, "Tag: 7");
-    protected final DetectionStorage TAG_8 = new DetectionStorage(36.0, 144.0, "Tag: 8");
-    protected final DetectionStorage TAG_9 = new DetectionStorage(108.0, 144.0, "Tag: 9");
-    protected final DetectionStorage TAG_10 = new DetectionStorage(102.0, 144.0, "Tag: 10");
+    protected final DetectionStorage TAG_7 = new DetectionStorage(114.0, 144.0, "Tag: 7");
+    protected final DetectionStorage TAG_8 = new DetectionStorage(108.0, 144.0, "Tag: 8");
+    protected final DetectionStorage TAG_9 = new DetectionStorage(36.0, 144.0, "Tag: 9");
+    protected final DetectionStorage TAG_10 = new DetectionStorage(30.0, 144.0, "Tag: 10");
     protected final DetectionStorage[] TAG_LIST = {TAG_1, TAG_2, TAG_3, TAG_4, TAG_5, TAG_6, TAG_7, TAG_8, TAG_9, TAG_10};
 
     protected Servo clawServo1;
     protected Servo clawServo2;
     protected Servo clawRotation;
+//    protected Servo arrow;
     protected Servo planeLauncher;
     protected boolean aprilTagCam = false;
 
@@ -80,14 +95,15 @@ public abstract class UscOpMode extends LinearOpMode {
     protected final double SPEED_MAX = 1.0;
     protected final double STRAFE_SPEED = 0.75;
     protected final double SPEED_HALF = 0.5;
-    protected final int ARM_SPEED = 1800;
+    protected final int ARM_SPEED = 2500;
     protected final double INTAKE_SPEED = 1.0d;
-    protected final int MAX_ARM_HEIGHT = 3000;
-    protected final int MIN_ARM_HEIGHT = -1;
+    protected final int MAX_ARM_HEIGHT = 2920;
+    protected final int MIN_ARM_HEIGHT = 40;
     protected /*final*/ float servoPlacePosition;
     protected /*final*/ float servoGrabPosition;
     protected final double AIRPLANE_HOLD_POS = 0.7;
     protected final double AIRPLANE_RELEASE_POS = -1.0;
+    protected final double ARM_TOLERANCE = 35;
     final double CLOSE_CLAW_1 = 0.3;
     final double CLOSE_CLAW_2 = 0.4;
     final double OPEN_CLAW_1 = 0.0;
@@ -98,9 +114,9 @@ public abstract class UscOpMode extends LinearOpMode {
         if (drivetrain){
             setUpDrivetrain();
         }
-        if(cameras){
-            setUpCameras();
-        }
+//        if(cameras){
+//            setUpCameras();
+//        }
         if(arm){
             setUpArm();
         }
@@ -112,7 +128,6 @@ public abstract class UscOpMode extends LinearOpMode {
         }
         if(launch){
             setUpAirplane();
-            planeLauncher.setPosition(AIRPLANE_HOLD_POS);
         }
     }
     public void setUpDrivetrain() {
@@ -120,6 +135,8 @@ public abstract class UscOpMode extends LinearOpMode {
         backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 2
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 1
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 0
+//        arrow = hardwareMap.get(Servo.class, "arrow");
+        direction = true;
     }
     public void drivetrainDirection(boolean forward){
         if (forward){
@@ -127,15 +144,15 @@ public abstract class UscOpMode extends LinearOpMode {
             backRight = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 1
             frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
             frontRight = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
+            direction = true;
         }
         else {
             frontRight = hardwareMap.get(DcMotorEx.class, "backLeft"); // Motor 0
             frontLeft = hardwareMap.get(DcMotorEx.class, "backRight"); // Motor 1
             backRight = hardwareMap.get(DcMotorEx.class, "frontLeft"); // Motor 2
             backLeft = hardwareMap.get(DcMotorEx.class, "frontRight"); // Motor 3
+            direction = false;
         }
-
-
     }
 
     public void setUpCameras(){
@@ -163,6 +180,26 @@ public abstract class UscOpMode extends LinearOpMode {
     }
     public void setUpAirplane(){
         planeLauncher = hardwareMap.get(Servo.class, "launcher");
+        planeLauncher.setPosition(AIRPLANE_HOLD_POS);
+        planeArmed = false;
+    }
+    public void setUpLights(){
+        lightFLR = hardwareMap.get(DigitalChannel.class, "FLR");
+        lightFLG = hardwareMap.get(DigitalChannel.class, "FLG");
+        lightFRR = hardwareMap.get(DigitalChannel.class, "FRR");
+        lightFRG = hardwareMap.get(DigitalChannel.class, "FRG");
+        lightBLR = hardwareMap.get(DigitalChannel.class, "BLR");
+        lightBLG = hardwareMap.get(DigitalChannel.class, "BLG");
+        lightBRR = hardwareMap.get(DigitalChannel.class, "BRR");
+        lightBRG = hardwareMap.get(DigitalChannel.class, "BRG");
+        lightFLR.setMode(DigitalChannel.Mode.OUTPUT);
+        lightFLG.setMode(DigitalChannel.Mode.OUTPUT);
+        lightFRR.setMode(DigitalChannel.Mode.OUTPUT);
+        lightFRG.setMode(DigitalChannel.Mode.OUTPUT);
+        lightBLR.setMode(DigitalChannel.Mode.OUTPUT);
+        lightBLG.setMode(DigitalChannel.Mode.OUTPUT);
+        lightBRR.setMode(DigitalChannel.Mode.OUTPUT);
+        lightBRG.setMode(DigitalChannel.Mode.OUTPUT);
     }
     public void runOpMode() throws InterruptedException {
     }
@@ -178,6 +215,7 @@ public abstract class UscOpMode extends LinearOpMode {
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
 
     protected void setRunToPosition() {
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -243,6 +281,12 @@ public abstract class UscOpMode extends LinearOpMode {
         else {
             visionPortal = VisionPortal.easyCreateWithDefaults(BuiltinCameraDirection.BACK, aprilTag);
         }
+        if (aprilTagCam) {
+            visionPortal2 = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 2"), aprilTag2);
+        }
+        else {
+            visionPortal2 = VisionPortal.easyCreateWithDefaults(BuiltinCameraDirection.BACK, aprilTag2);
+        }
     }
 
     protected ArrayList<DetectionStorage> processAprilTags() {
@@ -277,7 +321,28 @@ public abstract class UscOpMode extends LinearOpMode {
         posX = xOut/iters;
         posY = yOut/iters;
     }
-
+    protected void setLights(boolean red, boolean grn){
+        lightBLR.setState(!red);
+        lightBLG.setState(!grn);
+        lightBRR.setState(!red);
+        lightBRG.setState(!grn);
+        lightFLG.setState(!grn);
+        lightFLR.setState(!red);
+        lightFRG.setState(!grn);
+        lightFRR.setState(!red);
+    }
+    protected void setFrontLights(boolean red, boolean grn){
+        lightFLG.setState(!grn);
+        lightFLR.setState(!red);
+        lightFRG.setState(!grn);
+        lightFRR.setState(!red);
+    }
+    protected void setBackLights(boolean red, boolean grn){
+        lightBLR.setState(!red);
+        lightBLG.setState(!grn);
+        lightBRR.setState(!red);
+        lightBRG.setState(!grn);
+    }
     protected void motorsRight() {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);

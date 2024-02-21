@@ -79,7 +79,7 @@ public class AprilDetectionTest extends UscOpMode {
                 backLeft.setPower(strafeSpeedX);
                 backRight.setPower(strafeSpeedX);
             }
-            detectedObjects = processAprilTags();
+            processAprilTags();
             detectedObjects.trimToSize();
             for (int j = 0; j < detectedObjects.size(); j++){
                 telemetry.addData("Tag " + detectedObjects.get(j).id, detectedObjects.get(j).toString());
