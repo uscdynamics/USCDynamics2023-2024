@@ -113,9 +113,11 @@ public class ParkRedBottomLeft extends UscOpMode {
 
         if(place.equals("left")){
 
-            strafeLeft(305,700);
+            strafeLeft(305,800);
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
+            sleep(1000);
+            strafeRight(305,800);
 
         }
         else if(place.equals("right")){
@@ -125,15 +127,18 @@ public class ParkRedBottomLeft extends UscOpMode {
 
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
+            sleep(1000);
+            strafeLeft(305,800);
         }
         else {
             moveBackward(275, 700);
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
         }
-        sleep(400);
-        clawServo1.setPosition(CLOSE_CLAW_1);
-        clawServo2.setPosition(CLOSE_CLAW_2);
+        moveArm(150,1000);
+        moveForward(1200,800);
+        moveArmBack(250,850);
+
 
 
         sleep(7000);
