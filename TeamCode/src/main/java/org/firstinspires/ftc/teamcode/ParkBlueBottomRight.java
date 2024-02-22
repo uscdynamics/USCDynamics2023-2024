@@ -102,27 +102,107 @@ public class ParkBlueBottomRight extends UscOpMode {
             telemetry.addData("pos","mid");
             place = "mid";
         }
-        telemetry.addData("lef1",""+pipeline1.getLeftRed());
-        telemetry.addData("lef1",""+pipeline1.getRightRed());
-        moveForward(1000,750);
-        if(place.equals("right")){
-            strafeRight(aaryan,jai);// yaaaaaaaa
-        }
-        else if(place.equals("left")){
-            strafeLeft(aaryan,jai);
-        }
-        else{
-            moveForward(anthony,jai);
+
+
+
+        clawServo1.setPosition(CLOSE_CLAW_1);
+        clawServo2.setPosition(CLOSE_CLAW_2);
+        sleep(200);
+        moveArm(7,800);
+        clawRotation.setPosition(CLAW_ROTATION_PICK-.05);
+        sleep(400);
+        resetMotors();
+        moveBackward(700,850);
+
+        if(place.equals("left")){
+
+            strafeLeft(319,920);
+            clawServo1.setPosition(OPEN_CLAW_1);
+            clawServo2.setPosition(OPEN_CLAW_2);
+            sleep(400);
+            moveArm(12,900);
+            sleep(200);
 
         }
+        else if(place.equals("right")){
+
+            strafeRight(340 , 870);
+            sleep(200);
+
+
+            clawServo1.setPosition(OPEN_CLAW_1);
+            clawServo2.setPosition(OPEN_CLAW_2);
+
+
+            sleep(1000);
+            moveArm(5,900);
+            sleep(200);
+            clawServo1.setPosition(CLOSE_CLAW_1);
+            clawServo2.setPosition(CLOSE_CLAW_2);
+            moveArm(92,900);
+
+            strafeLeft(340 , 870);
 
 
 
 
+        }
+        else {
+            moveBackward(275, 700);
+            clawServo1.setPosition(OPEN_CLAW_1);
+            clawServo2.setPosition(OPEN_CLAW_2);
+            sleep(400);
+            moveArm(12,900);
+            sleep(200);
+        }
+
+
+        clawServo1.setPosition(CLOSE_CLAW_1);
+        clawServo2.setPosition(CLOSE_CLAW_2);
+
+        sleep(200);
+        moveForward(1600,890);
+        moveBackward(120,1000);
+        turnLeft(77,500);
+        if(place.equals("left")){
+            moveBackward(598,950);
+
+
+            strafeRight(500,870);
+
+
+        }
+        else if(place.equals("right")){
+            moveBackward(867,750);
+
+            strafeRight(875,700);
+
+
+        }
+        else {
+            moveBackward(890,750);
+
+            strafeRight(720,700);
 
 
 
-        sleep(7000);
+        }
+        moveBackward(300,600);
+        moveArm(770,900);
+        sleep(1000);
+        clawRotation.setPosition(CLAW_ROTATION_PLACE);
+        sleep(1400);
+        clawServo1.setPosition(OPEN_CLAW_1);
+        clawServo2.setPosition(OPEN_CLAW_2);
+        moveBackward(50,1000);
+        moveForward(100,800);
+        clawRotation.setPosition(CLAW_ROTATION_PICK);
+        moveArmBack(1900,850);
+        clawServo1.setPosition(CLOSE_CLAW_1);
+        clawServo2.setPosition(CLOSE_CLAW_2);
+        strafeLeft(1000,900);
+        moveBackward(300,900);
+        sleep(2000);
 
 
 

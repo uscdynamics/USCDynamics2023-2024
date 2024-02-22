@@ -211,7 +211,7 @@ public abstract class UscOpMode extends LinearOpMode {
 
     protected void resetMotors() {
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode (DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
@@ -412,7 +412,7 @@ public abstract class UscOpMode extends LinearOpMode {
     protected void moveBackward(double distanceMm, double velocity) {
         double numberOfTicks = (distanceMm / WHEEL_CIRCUMFERENCE) * TICKS_PER_REVOLUTION;
         resetMotors();
-        motorsBackward();
+        motorsBackward ();
         setTargetPosition((int) numberOfTicks);
         setRunToPosition();
         setVelocity(velocity);
@@ -423,6 +423,49 @@ public abstract class UscOpMode extends LinearOpMode {
             telemetry.update();
         }
     }
+    protected void moveArm(double distanceMm, double velocity) {
+        double numberOfTicks = (distanceMm / WHEEL_CIRCUMFERENCE) * TICKS_PER_REVOLUTION;
+        armMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        armMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        armMotor1.setTargetPosition((int)numberOfTicks);
+        armMotor2.setTargetPosition((int)numberOfTicks);
+
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        armMotor1.setVelocity(velocity);
+        armMotor2.setVelocity(velocity);;
+        while (frontLeft.isBusy()) {
+            telemetry.addData("velocity", frontLeft.getVelocity());
+            telemetry.addData("position", frontLeft.getCurrentPosition());
+            telemetry.addData("is at target", !frontLeft.isBusy());
+            telemetry.update();
+        }
+    }
+    protected void moveArmBack(double distanceMm, double velocity) {
+        double numberOfTicks = (distanceMm / WHEEL_CIRCUMFERENCE) * TICKS_PER_REVOLUTION;
+        armMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
+        armMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
+        armMotor1.setTargetPosition((int)numberOfTicks);
+        armMotor2.setTargetPosition((int)numberOfTicks);
+
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        armMotor1.setVelocity(velocity);
+        armMotor2.setVelocity(velocity);;
+        while (frontLeft.isBusy()) {
+            telemetry.addData("velocity", frontLeft.getVelocity());
+            telemetry.addData("position", frontLeft.getCurrentPosition());
+            telemetry.addData("is at target", !frontLeft.isBusy());
+            telemetry.update();
+        }
+    }
+
 
     protected void strafeLeft(double distanceMm, double velocity) {
         double numberOfTicks = (distanceMm / WHEEL_CIRCUMFERENCE) * TICKS_PER_REVOLUTION;

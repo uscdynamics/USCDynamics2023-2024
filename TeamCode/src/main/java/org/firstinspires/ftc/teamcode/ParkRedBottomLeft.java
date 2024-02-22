@@ -106,34 +106,34 @@ public class ParkRedBottomLeft extends UscOpMode {
         clawServo1.setPosition(CLOSE_CLAW_1);
         clawServo2.setPosition(CLOSE_CLAW_2);
         clawRotation.setPosition(CLAW_ROTATION_PICK-.05);
+        sleep(400);
         resetMotors();
+        moveBackward(700,850);
 
-        moveBackward(100,700);
-        strafeLeft(920,450);
-        moveForward(1050,1000);
-        moveBackward(810,500);
+
         if(place.equals("left")){
 
-            strafeRight(435,500);
+            strafeLeft(305,700);
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
 
         }
-        else if(place.equals("right")) {
-            strafeRight(800, 800);
-            moveForward(130,460);
-            strafeRight(307 , 600);
-            moveBackward(35,300);
+        else if(place.equals("right")){
+
+            strafeRight(339 , 800);
+
 
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
         }
         else {
-            moveBackward(130, 500);
-            strafeRight(700, 900);
+            moveBackward(275, 700);
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
         }
+        sleep(400);
+        clawServo1.setPosition(CLOSE_CLAW_1);
+        clawServo2.setPosition(CLOSE_CLAW_2);
 
 
         sleep(7000);

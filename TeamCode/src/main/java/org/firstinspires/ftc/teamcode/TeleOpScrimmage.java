@@ -27,6 +27,13 @@ public class TeleOpScrimmage extends UscOpMode {
         armMotor2.setPower(power);
     }
 
+    public void moveArmUp(boolean isUp, double power) {
+        armMotor1.setDirection(isUp ? DcMotorSimple.Direction.FORWARD : DcMotorSimple.Direction.REVERSE);
+        armMotor2.setDirection(isUp ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
+        armMotor1.setPower(power);
+        armMotor2.setPower(power);
+    }
+
 
     @Override
     public void runOpMode() throws InterruptedException {
