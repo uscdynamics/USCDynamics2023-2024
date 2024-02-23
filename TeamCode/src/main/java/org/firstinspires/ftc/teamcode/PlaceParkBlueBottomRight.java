@@ -37,14 +37,18 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name="Robot: ParkRedBottomLeft", group="Robot")
+@Autonomous(name="Robot: PlaceParkBlueBottomRight", group="Robot")
 
-public class ParkRedBottomLeft extends UscOpMode {
+public class PlaceParkBlueBottomRight extends UscOpMode {
     OpenCvWebcam webcam1;
     OpenCvWebcam webcam2;
     ColorMaskPipeline pipeline1 = new ColorMaskPipeline();
     ColorMaskPipeline pipeline2 = new ColorMaskPipeline();
     String place = "";
+    int aaryan = 250;
+    int jai = 700;
+    int anthony = 250;
+
     @Override
     public void runOpMode() {
         waitForStart();
@@ -79,71 +83,123 @@ public class ParkRedBottomLeft extends UscOpMode {
             public void onError(int errorCode) {
             }
         });
-        while((pipeline1.getLeftRed() > 0 && pipeline2.getLeftRed() > 0) == false){
+        while((pipeline1.getLeftBlue() > 0 && pipeline2.getLeftBlue() > 0) == false){
             telemetry.addData("waiting for cams to load","hopfully we are not fucked");
             telemetry.update();
         }
         sleep(100);
 
 
-        if(pipeline1.getLeftRed() > pipeline1.getRightRed() && pipeline2.getRightRed() < pipeline1.getLeftRed()){
+        if(pipeline1.getLeftBlue() > pipeline1.getRightBlue() && pipeline2.getRightBlue() < pipeline1.getLeftBlue()){
             telemetry.addData("pos","LEFFF");
             place = "left";
         }
-        else if(pipeline2.getRightRed() > pipeline2.getLeftRed() && pipeline2.getRightRed() > pipeline1.getLeftRed()){
+        else if(pipeline2.getRightBlue() > pipeline2.getLeftBlue() && pipeline2.getRightBlue() > pipeline1.getLeftBlue()){
             telemetry.addData("pos","RIGGGGGHTHTHTHGITIRII");
-                place = "right";
+            place = "right";
         }
         else{
             telemetry.addData("pos","mid");
             place = "mid";
         }
-        telemetry.addData("lef1",""+pipeline1.getLeftRed());
-        telemetry.addData("lef1",""+pipeline1.getRightRed());
 
 
 
         clawServo1.setPosition(CLOSE_CLAW_1);
         clawServo2.setPosition(CLOSE_CLAW_2);
+        sleep(200);
+        moveArm(7,800);
         clawRotation.setPosition(CLAW_ROTATION_PICK-.05);
         sleep(400);
         resetMotors();
         moveBackward(700,850);
 
-
-        moveArm(150,1000);
-
         if(place.equals("left")){
 
-            strafeLeft(305,800);
+            strafeLeft(319,920);
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
-            sleep(1000);
-            strafeRight(305,800);
+            sleep(400);
+            moveArm(12,900);
+            sleep(200);
 
         }
         else if(place.equals("right")){
 
-            strafeRight(339 , 800);
+            strafeRight(355 , 870);
+            sleep(200);
 
 
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
+
+
             sleep(1000);
-            strafeLeft(305,800);
-            moveBackward(10,800);
+            moveArm(5,900);
+            sleep(200);
+            clawServo1.setPosition(CLOSE_CLAW_1);
+            clawServo2.setPosition(CLOSE_CLAW_2);
+            moveArm(92,900);
+
+            strafeLeft(340 , 870);
+
         }
         else {
-            moveBackward(272, 700);
+            moveBackward(270, 870);
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
+            sleep(400);
+            moveArm(12,900);
+            sleep(200);
         }
-        moveForward(1200,800);
-        moveArmBack(250,850);
+
+
+        clawServo1.setPosition(CLOSE_CLAW_1);
+        clawServo2.setPosition(CLOSE_CLAW_2);
+
+        sleep(200);
+        moveForward(1600,890);
+        moveBackward(120,1000);
+        turnLeft(77,500);
+        if(place.equals("left")){
+            moveBackward(598,950);
+
+
+            strafeRight(500,870);
+
+
+        }
+        else if(place.equals("right")){
+            moveBackward(867,750);
+
+            strafeRight(875,700);
+
+
+        }
+        else {
+            moveBackward(890,750);
+
+            strafeRight(707,750);
 
 
 
-        sleep(7000);
+        }
+        moveBackward(300,600);
+        moveArm(770,900);
+        sleep(1000);
+        clawRotation.setPosition(CLAW_ROTATION_PLACE);
+        sleep(1400);
+        clawServo1.setPosition(OPEN_CLAW_1);
+        clawServo2.setPosition(OPEN_CLAW_2);
+        moveBackward(50,1000);
+        moveForward(100,800);
+        clawRotation.setPosition(CLAW_ROTATION_PICK);
+        moveArmBack(1900,850);
+        clawServo1.setPosition(CLOSE_CLAW_1);
+        clawServo2.setPosition(CLOSE_CLAW_2);
+        strafeLeft(1000,900);
+        moveBackward(300,900);
+        sleep(2000);
 
 
 

@@ -116,17 +116,21 @@ public class ParkBlueBottomRight extends UscOpMode {
 
         if(place.equals("left")){
 
-            strafeLeft(319,920);
+            strafeLeft(332 ,920);
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
             sleep(400);
             moveArm(12,900);
             sleep(200);
+            strafeRight(332,920);
+            sleep(400);
+
+
 
         }
         else if(place.equals("right")){
 
-            strafeRight(340 , 870);
+            strafeRight(355 , 870);
             sleep(200);
 
 
@@ -143,12 +147,9 @@ public class ParkBlueBottomRight extends UscOpMode {
 
             strafeLeft(340 , 870);
 
-
-
-
         }
         else {
-            moveBackward(275, 700);
+            moveBackward(270, 870);
             clawServo1.setPosition(OPEN_CLAW_1);
             clawServo2.setPosition(OPEN_CLAW_2);
             sleep(400);
@@ -161,48 +162,11 @@ public class ParkBlueBottomRight extends UscOpMode {
         clawServo2.setPosition(CLOSE_CLAW_2);
 
         sleep(200);
-        moveForward(1600,890);
+
+        moveForward(1500,700);
+        moveArmBack(200,800);
+
         moveBackward(120,1000);
-        turnLeft(77,500);
-        if(place.equals("left")){
-            moveBackward(598,950);
-
-
-            strafeRight(500,870);
-
-
-        }
-        else if(place.equals("right")){
-            moveBackward(867,750);
-
-            strafeRight(875,700);
-
-
-        }
-        else {
-            moveBackward(890,750);
-
-            strafeRight(720,700);
-
-
-
-        }
-        moveBackward(300,600);
-        moveArm(770,900);
-        sleep(1000);
-        clawRotation.setPosition(CLAW_ROTATION_PLACE);
-        sleep(1400);
-        clawServo1.setPosition(OPEN_CLAW_1);
-        clawServo2.setPosition(OPEN_CLAW_2);
-        moveBackward(50,1000);
-        moveForward(100,800);
-        clawRotation.setPosition(CLAW_ROTATION_PICK);
-        moveArmBack(1900,850);
-        clawServo1.setPosition(CLOSE_CLAW_1);
-        clawServo2.setPosition(CLOSE_CLAW_2);
-        strafeLeft(1000,900);
-        moveBackward(300,900);
-        sleep(2000);
 
 
 
